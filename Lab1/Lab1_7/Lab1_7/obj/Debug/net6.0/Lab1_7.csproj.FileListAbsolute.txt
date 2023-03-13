@@ -1,0 +1,64 @@
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\appsettings.Development.json
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\appsettings.json
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Lab1_7.exe
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Lab1_7.deps.json
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Lab1_7.runtimeconfig.json
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Lab1_7.dll
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Lab1_7.pdb
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Microsoft.OpenApi.dll
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.csproj.AssemblyReference.cache
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.AssemblyInfoInputs.cache
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.AssemblyInfo.cs
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.csproj.CoreCompileInputs.cache
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\staticwebassets\msbuild.Lab1_7.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\staticwebassets\msbuild.build.Lab1_7.props
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\staticwebassets\msbuild.buildMultiTargeting.Lab1_7.props
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\staticwebassets\msbuild.buildTransitive.Lab1_7.props
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\staticwebassets.pack.json
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\staticwebassets.build.json
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\staticwebassets.development.json
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\scopedcss\bundle\Lab1_7.styles.css
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.csproj.CopyComplete
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.dll
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\refint\Lab1_7.dll
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.pdb
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.genruntimeconfig.cache
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\ref\Lab1_7.dll
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\appsettings.Development.json
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\appsettings.json
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Lab1_7.exe
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Lab1_7.deps.json
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Lab1_7.runtimeconfig.json
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Lab1_7.dll
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Lab1_7.pdb
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Microsoft.OpenApi.dll
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.csproj.AssemblyReference.cache
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.AssemblyInfoInputs.cache
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.AssemblyInfo.cs
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.csproj.CoreCompileInputs.cache
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\staticwebassets\msbuild.Lab1_7.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\staticwebassets\msbuild.build.Lab1_7.props
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\staticwebassets\msbuild.buildMultiTargeting.Lab1_7.props
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\staticwebassets\msbuild.buildTransitive.Lab1_7.props
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\staticwebassets.pack.json
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\staticwebassets.build.json
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\staticwebassets.development.json
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\scopedcss\bundle\Lab1_7.styles.css
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.csproj.CopyComplete
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.dll
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\refint\Lab1_7.dll
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.pdb
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\Lab1_7.genruntimeconfig.cache
+C:\Users\ADMIN\Desktop\University Work\WEBAPPConstruct\Lab1\Lab1_7\Lab1_7\obj\Debug\net6.0\ref\Lab1_7.dll

@@ -1,0 +1,7 @@
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_5\Lab1_5\obj\Release\net6.0\PubTmp\Out\Lab1_5.exe
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_5\Lab1_5\obj\Release\net6.0\PubTmp\Out\appsettings.Development.json
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_5\Lab1_5\obj\Release\net6.0\PubTmp\Out\appsettings.json
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_5\Lab1_5\obj\Release\net6.0\PubTmp\Out\Lab1_5.dll
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_5\Lab1_5\obj\Release\net6.0\PubTmp\Out\Lab1_5.deps.json
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_5\Lab1_5\obj\Release\net6.0\PubTmp\Out\Lab1_5.runtimeconfig.json
+C:\Users\ADMIN\Desktop\Работа в универе\WEBAPPConstruct\Lab1\Lab1_5\Lab1_5\obj\Release\net6.0\PubTmp\Out\Lab1_5.pdb
