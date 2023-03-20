@@ -8,8 +8,8 @@ namespace InternetShopWebApp.Controllers
     [ApiController]
     public class OrderItemController : ControllerBase
     {
-        private readonly Context.Context _context;
-        public OrderItemController(Context.Context context)
+        private readonly Context.ShopContext _context;
+        public OrderItemController(Context.ShopContext context)
         {
             _context = context;
             if (!_context.OrderItem.Any())
@@ -31,7 +31,7 @@ namespace InternetShopWebApp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderItemModel>>> GetAllOrderItem()
         {
-            return await _context.OrderItem.ToListAsync();
+            return await _context.OrderItem.Include(p=>p.Products).ToListAsync();
         }
         // GET: api/OrderItems/5
         [HttpGet("{id}")]

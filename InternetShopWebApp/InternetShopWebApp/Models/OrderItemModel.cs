@@ -9,7 +9,7 @@ namespace InternetShopWebApp.Models
             Products = new HashSet<ProductModel>();
         }
 
-        public virtual ICollection<ProductModel> Products { get; set; }
+        
         [Key]
         public int Order_Item_Code { get; set; }
         public Nullable<int> Order_Sum { get; set; }
@@ -17,5 +17,6 @@ namespace InternetShopWebApp.Models
         public Nullable<int> Product_Code { get; set; }
         public Nullable<int> Order_Code { get; set; }
         public int Status_Order_Item_Table_ID { get; set; }
+        public virtual ICollection<ProductModel> Products { get; set; }
     }
 }

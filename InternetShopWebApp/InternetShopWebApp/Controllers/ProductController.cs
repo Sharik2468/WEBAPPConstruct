@@ -8,18 +8,12 @@ namespace InternetShopWebApp.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly Context.Context _context;
-        public ProductController(Context.Context context)
+        private readonly Context.ShopContext _context;
+        public ProductController(Context.ShopContext context)
         {
             _context = context;
             if (!_context.Product.Any())
             {
-                _context.Cathegory.Add(new CathegoryModel
-                {
-                    Category_ID = 1,
-                    Category_Name = "Smartphones",
-                    Parent_ID = 1
-                });
                 _context.Product.Add(new ProductModel
                 {
                     Product_Code = 1,

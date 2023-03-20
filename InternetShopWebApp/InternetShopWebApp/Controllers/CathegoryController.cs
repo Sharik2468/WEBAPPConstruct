@@ -8,16 +8,16 @@ namespace InternetShopWebApp.Controllers
     [ApiController]
     public class CathegoryController : ControllerBase
     {
-        private readonly Context.Context _context;
-        public CathegoryController(Context.Context context)
+        private readonly Context.ShopContext _context;
+        public CathegoryController(Context.ShopContext context)
         {
             _context = context;
             if (!_context.Cathegory.Any())
             {
                 _context.Cathegory.Add(new CathegoryModel
                 {
-                    Category_ID = 1,
-                    Category_Name = "Smartphones",
+                    Cathegory_ID = 1,
+                    Cathegory_Name = "Smartphones",
                     Parent_ID = 1
                 });
                 _context.SaveChanges();
@@ -52,14 +52,14 @@ namespace InternetShopWebApp.Controllers
             }
             _context.Cathegory.Add(Cathegory);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetCathegory", new { id = Cathegory.Category_ID }, Cathegory);
+            return CreatedAtAction("GetCathegory", new { id = Cathegory.Cathegory_ID }, Cathegory);
         }
 
         // PUT: api/Cathegory/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCathegory(int id, CathegoryModel Cathegory)
         {
-            if (id != Cathegory.Category_ID)
+            if (id != Cathegory.Cathegory_ID)
             {
                 return BadRequest();
             }
@@ -84,7 +84,7 @@ namespace InternetShopWebApp.Controllers
 
         private bool CathegoryExists(int id)
         {
-            return _context.Cathegory.Any(e => e.Category_ID == id);
+            return _context.Cathegory.Any(e => e.Cathegory_ID == id);
         }
 
         // DELETE: api/Cathegory/5

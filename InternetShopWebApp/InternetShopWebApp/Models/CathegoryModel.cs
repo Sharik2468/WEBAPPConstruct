@@ -9,9 +9,11 @@ namespace InternetShopWebApp.Models
         }
 
         [Key]
-        public int Category_ID { get; set; }
-        public string Category_Name { get; set; }
+        public int Cathegory_ID { get; set; }
+        public string Cathegory_Name { get; set; }
         public int Parent_ID { get; set; }
-        public virtual CathegoryModel ParentCathegory { get; set; }
+        //public ProductModel Product { get; set; }
+        //public virtual CathegoryModel ParentCathegory { get; set; }
+      
     }
 }
