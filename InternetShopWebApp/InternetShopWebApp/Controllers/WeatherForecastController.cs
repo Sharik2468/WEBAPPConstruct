@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 
 namespace InternetShopWebApp.Controllers
 {
     [ApiController]
+    [EnableCors]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {

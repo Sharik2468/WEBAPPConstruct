@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InternetShopWebApp.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace InternetShopWebApp.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors]
     [ApiController]
     public class ProductController : ControllerBase
     {

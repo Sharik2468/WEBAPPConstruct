@@ -4167,11 +4167,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ADMIN\\Desktop\\University Work\\WEBAPPConstruct\\InternetShopWebApp\\InternetShopWebApp\\InternetShopWebApp.csproj",
+      "projectUniqueName": "C:\\Users\\ADMIN\\Desktop\\UniversityWork\\WEBAPPConstruct\\InternetShopWebApp\\InternetShopWebApp\\InternetShopWebApp.csproj",
       "projectName": "InternetShopWebApp",
-      "projectPath": "C:\\Users\\ADMIN\\Desktop\\University Work\\WEBAPPConstruct\\InternetShopWebApp\\InternetShopWebApp\\InternetShopWebApp.csproj",
+      "projectPath": "C:\\Users\\ADMIN\\Desktop\\UniversityWork\\WEBAPPConstruct\\InternetShopWebApp\\InternetShopWebApp\\InternetShopWebApp.csproj",
       "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ADMIN\\Desktop\\University Work\\WEBAPPConstruct\\InternetShopWebApp\\InternetShopWebApp\\obj\\",
+      "outputPath": "C:\\Users\\ADMIN\\Desktop\\UniversityWork\\WEBAPPConstruct\\InternetShopWebApp\\InternetShopWebApp\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "g1oLLIU0HZ9ASU5pSThTC1csV9MGOegiCrAf7rN82+Zvp8y/UlxBEvJVlWOP6aIBoRgQoGmRev96wuCQ7ne/cg==",
+  "dgSpecHash": "k/KTkxv6buAvkPNq6j38ZbSKi92ewr+i8XhIOsG8zsihFvhIubYrIR3qwLlyqh1wmxGfcVnXKdNtyzHzwNsUWg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\ADMIN\\Desktop\\University Work\\WEBAPPConstruct\\InternetShopWebApp\\InternetShopWebApp\\InternetShopWebApp.csproj",
+  "projectFilePath": "C:\\Users\\ADMIN\\Desktop\\UniversityWork\\WEBAPPConstruct\\InternetShopWebApp\\InternetShopWebApp\\InternetShopWebApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ADMIN\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
