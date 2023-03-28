@@ -1,5 +1,7 @@
 using InternetShopWebApp.Context;
 using InternetShopWebApp.Data;
+using InternetShopWebApp.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json.Serialization;
 
@@ -28,6 +30,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //builder.Services.AddDbContext<ProductContext>(opt =>
 //opt.UseModel(ProductModel));
+builder.Services.AddIdentity<User, IdentityRole>()
+.AddEntityFrameworkStores<ShopContext>();
 builder.Services.AddDbContext<ShopContext>();
 builder.Services.AddControllers().AddJsonOptions(x =>
 x.JsonSerializerOptions.ReferenceHandler =
@@ -54,6 +58,7 @@ app.UseHttpsRedirection();
 
 app.UseCors();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

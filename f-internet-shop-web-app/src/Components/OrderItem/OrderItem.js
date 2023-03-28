@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import './Style.css';
 
-const OrderItem = ({ OrderItems = [], setOrderItems, removeOrderItem }) => {
+// eslint-disable-next-line react/prop-types
+const OrderItem = ({user, OrderItems, setOrderItems, removeOrderItem}) => {
   useEffect(() => {
     const getOrderItems = async () => {
       const requestOptions = {
@@ -21,49 +22,89 @@ const OrderItem = ({ OrderItems = [], setOrderItems, removeOrderItem }) => {
     getOrderItems();
   }, [setOrderItems]);
 
-  const deleteOrderItem = async ({ order_Item_Code }) => {
+  // eslint-disable-next-line camelcase
+  const deleteOrderItem = async ({order_Item_Code}) => {
     const requestOptions = {
-      method: 'DELETE'
-    }
+      method: 'DELETE',
+    };
+    // eslint-disable-next-line camelcase
     return await fetch(`https://localhost:7194/api/OrderItem/${order_Item_Code}`,
-      requestOptions)
+        requestOptions)
 
-      .then((response) => {
-        if (response.ok) {
-          removeOrderItem(order_Item_Code);
-        }
-      },
-        (error) => console.log(error)
-      )
-  }
+        .then((response) => {
+          if (response.ok) {
+            removeOrderItem(order_Item_Code);
+          }
+        },
+        (error) => console.log(error),
+        );
+  };
 
   return (
     <React.Fragment>
-      <h3>Список блогов</h3>
+      <h3>Список строк заказа</h3>
       {OrderItems && OrderItems.length > 0 ? (
-        OrderItems.map(({ order_Item_Code, order_Sum, amount_Order_Item, product_Code, order_Code, status_Order_Item_Table_ID, products }) => (
-          <div className="OrderItem" key={order_Item_Code} id={order_Item_Code}>
+        // eslint-disable-next-line camelcase, max-len
+        OrderItems.map(
+            ({
+              order_Item_Code,
+              order_Sum,
+              amount_Order_Item,
+              product_Code,
+              order_Code,
+              status_Order_Item_Table_ID,
+              products,
+            }) => (
+            // eslint-disable-next-line camelcase
+              <div
+                className="OrderItem"
+                key={order_Item_Code}
+                id={order_Item_Code}
+              >
+                <strong>
+                  {order_Item_Code}: {amount_Order_Item}
+                </strong>
 
-            <strong>
-              {order_Item_Code}: {amount_Order_Item}
-            </strong>
-            <button onClick={(e) => deleteOrderItem({ order_Item_Code})}>Удалить</button>
+                {user.isAuthenticated ? (
+                <button onClick={() => deleteItem({blogId})}>Удалить</button>
+              ) : (
+                ''
+              )}
 
-            {products && products.map(({ product_Code, orderItem_Code, numberInStock, categoryID, dateOfManufacture, description, purchasePrice, marketPrice, bestBeforeDate, name, productOrderItem }) => (
-              <div className="OrderItemText" key={product_Code} id={product_Code}>
-                {name} <br />
-                {description}
-                <hr />
+                {products &&
+                products.map(
+                    ({
+                      product_Code,
+                      orderItem_Code,
+                      numberInStock,
+                      categoryID,
+                      dateOfManufacture,
+                      description,
+                      purchasePrice,
+                      marketPrice,
+                      bestBeforeDate,
+                      name,
+                      productOrderItem,
+                    }) => (
+                      <div
+                        className="OrderItemText"
+                        key={product_Code}
+                        id={product_Code}
+                      >
+                        {name} <br />
+                        {description}
+                        <hr />
+                      </div>
+                    ),
+                )}
               </div>
-            ))}
-          </div>
-        ))
+            ),
+        )
       ) : (
         <p>Загрузка данных...</p>
       )}
     </React.Fragment>
   );
-  
 };
 
 export default OrderItem;

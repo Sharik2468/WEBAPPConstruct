@@ -190,3 +190,8 @@ C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\Interne
 C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\InternetShopWebApp\obj\Debug\net6.0\InternetShopWebApp.pdb
 C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\InternetShopWebApp\obj\Debug\net6.0\InternetShopWebApp.genruntimeconfig.cache
 C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\InternetShopWebApp\obj\Debug\net6.0\ref\InternetShopWebApp.dll
+C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\InternetShopWebApp\bin\Debug\net6.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\InternetShopWebApp\bin\Debug\net6.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\InternetShopWebApp\bin\Debug\net6.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\InternetShopWebApp\bin\Debug\net6.0\Microsoft.Extensions.Identity.Core.dll
+C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\InternetShopWebApp\bin\Debug\net6.0\Microsoft.Extensions.Identity.Stores.dll

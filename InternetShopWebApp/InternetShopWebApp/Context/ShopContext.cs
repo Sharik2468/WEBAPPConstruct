@@ -1,9 +1,10 @@
 ﻿using InternetShopWebApp.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace InternetShopWebApp.Context
 {
-    public class ShopContext : DbContext
+    public class ShopContext : IdentityDbContext<User>
     {
         protected readonly IConfiguration Configuration;
         #region Constructors
@@ -23,6 +24,8 @@ namespace InternetShopWebApp.Context
         protected override void OnModelCreating(ModelBuilder
         modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<ProductModel>(entity =>
             {
                 //entity.Property(e => e.Product_Code).IsRequired();
