@@ -2,7 +2,6 @@ using InternetShopWebApp.Context;
 using InternetShopWebApp.Data;
 using InternetShopWebApp.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,15 +20,10 @@ builder.Services.AddCors(options =>
 
 // Add services to the container.
 
-//builder.Services.AddDbContext<Context>(opt =>
-//opt.UseInMemoryDatabase("Shop"));
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//builder.Services.AddDbContext<ProductContext>(opt =>
-//opt.UseModel(ProductModel));
 builder.Services.AddIdentity<User, IdentityRole>()
 .AddEntityFrameworkStores<ShopContext>();
 builder.Services.AddDbContext<ShopContext>();
