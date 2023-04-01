@@ -20,7 +20,7 @@ const Register = ({user, setUser}) => {
       }),
     };
     return await fetch(
-        'https://localhost:7194/api/account/register',
+        "api/account/register",
         requestOptions,
     )
         .then((response) => {

@@ -59,12 +59,12 @@ namespace InternetShopWebApp.Controllers
         [HttpPost]
         [Route("api/account/login")]
         //[AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] RegisterViewModel model)
+        public async Task<IActionResult> Login([FromBody] LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
                 var result =
-                await _signInManager.PasswordSignInAsync(model.Email, model.Password, true, true);
+                await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, true);
                 if (result.Succeeded)
                 {
                     return Ok(new { message = "Выполнен вход", userName = model.Email });

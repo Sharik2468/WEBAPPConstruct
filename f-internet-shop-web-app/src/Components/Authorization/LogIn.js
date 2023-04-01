@@ -17,7 +17,7 @@ const LogIn = ({user, setUser}) => {
       }),
     };
     return await fetch(
-        'https://localhost:7194/api/account/login',
+        "api/account/login",
         requestOptions,
     )
         .then((response) => {

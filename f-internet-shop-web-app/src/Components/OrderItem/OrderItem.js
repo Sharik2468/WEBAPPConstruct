@@ -10,7 +10,7 @@ const OrderItem = ({user, OrderItems, setOrderItems, removeOrderItem}) => {
       };
 
       try {
-        const response = await fetch('https://localhost:7194/api/OrderItem/', requestOptions);
+        const response = await fetch("/api/OrderItem/", requestOptions);
         const data = await response.json();
         console.log('Data:', data);
         setOrderItems(data);
@@ -28,7 +28,7 @@ const OrderItem = ({user, OrderItems, setOrderItems, removeOrderItem}) => {
       method: 'DELETE',
     };
     // eslint-disable-next-line camelcase
-    return await fetch(`https://localhost:7194/api/OrderItem/${order_Item_Code}`,
+    return await fetch("/api/OrderItem/${order_Item_Code}",
         requestOptions)
 
         .then((response) => {

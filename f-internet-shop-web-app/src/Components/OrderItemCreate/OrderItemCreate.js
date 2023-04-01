@@ -15,7 +15,7 @@ const OrderItemCreate = ({user, addOrderItem}) => {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(OrderItem),
       };
-      const response = await fetch('https://localhost:7194/api/OrderItem/',
+      const response = await fetch("api/OrderItem/",
 
           requestOptions);
 
@@ -37,8 +37,8 @@ const OrderItemCreate = ({user, addOrderItem}) => {
     <React.Fragment>
         {user.isAuthenticated ? (
                 <><h3>Создание новой строки заказа</h3><form onSubmit={handleSubmit}>
-                  <label>URL: </label>
-                  <input type="text" name="url" placeholder="Введите Url:" />
+                  <label>OrderItem: </label>
+                  <input type="text" name="url" placeholder="Введите новую строку заказа:" />
                   <button type="submit">Создать</button>
               </form></>
               ) : (
