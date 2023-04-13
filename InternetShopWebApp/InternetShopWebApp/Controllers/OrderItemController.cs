@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using InternetShopWebApp.Models;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace InternetShopWebApp.Controllers
 {
@@ -94,6 +96,7 @@ namespace InternetShopWebApp.Controllers
 
         // DELETE: api/OrderItem/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteOrderItem(int id)
         {
             var blog = await _context.OrderItem.FindAsync(id);

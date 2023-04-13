@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using InternetShopWebApp.Models;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace InternetShopWebApp.Controllers
 {
@@ -92,6 +94,7 @@ namespace InternetShopWebApp.Controllers
 
         // DELETE: api/Cathegory/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteCathegory(int id)
         {
             var blog = await _context.Cathegory.FindAsync(id);

@@ -65,7 +65,7 @@ const OrderItem = ({user, OrderItems, setOrderItems, removeOrderItem}) => {
                   {order_Item_Code}: {amount_Order_Item}
                 </strong>
 
-                {user.isAuthenticated ? (
+                {user.isAuthenticated && user.userRole != 'admin' ? (
                 <button onClick={() => deleteItem({blogId})}>Удалить</button>
               ) : (
                 ''

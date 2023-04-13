@@ -24,7 +24,7 @@ const LogIn = ({user, setUser}) => {
         // console.log(response.status)
 
           response.status === 200 &&
-          setUser({isAuthenticated: true, userName: ''});
+          setUser({isAuthenticated: true, userName: '', userRole: ''});
           return response.json();
         })
         .then(
@@ -32,9 +32,11 @@ const LogIn = ({user, setUser}) => {
               console.log('Data:', data);
               if (
                 typeof data !== 'undefined' &&
-            typeof data.userName !== 'undefined'
+            typeof data.userName !== 'undefined'&&
+            typeof data.userRole !== 'undefined'
               ) {
-                setUser({isAuthenticated: true, userName: data.userName});
+                // eslint-disable-next-line max-len
+                setUser({isAuthenticated: true, userName: data.userName, userRole: data.userRole});
                 navigate('/');
               }
               typeof data !== 'undefined' &&
@@ -51,7 +53,7 @@ const LogIn = ({user, setUser}) => {
   return (
     <>
       {user.isAuthenticated ? (
-        <h3>Пользователь {user.userName} успешно вошел в систему</h3>
+        <h3>Пользователь {user.userName} с ролью {user.userRole} успешно вошел в систему</h3>
       ) : (
         <>
           <h3>Вход</h3>

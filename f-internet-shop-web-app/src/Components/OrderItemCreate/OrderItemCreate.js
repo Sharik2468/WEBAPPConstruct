@@ -35,7 +35,7 @@ const OrderItemCreate = ({user, addOrderItem}) => {
   };
   return (
     <React.Fragment>
-        {user.isAuthenticated ? (
+        {user.isAuthenticated && user.userRole != 'admin' ? (
                 <><h3>Создание новой строки заказа</h3><form onSubmit={handleSubmit}>
                   <label>OrderItem: </label>
                   <input type="text" name="url" placeholder="Введите новую строку заказа:" />

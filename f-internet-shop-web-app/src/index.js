@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
@@ -17,7 +18,7 @@ const App = () => {
     setOrderItems(OrderItems.filter(({order_Item_Code}) =>
       // eslint-disable-next-line camelcase
       order_Item_Code !== removeId));
-  const [user, setUser] = useState({isAuthenticated: false, userName: ''});
+  const [user, setUser] = useState({isAuthenticated: false, userName: '', userRole: ''});
 
   return (
     <BrowserRouter>
