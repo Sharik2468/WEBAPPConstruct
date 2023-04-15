@@ -1,33 +1,25 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
-
+import {Button, Form, Input} from 'antd';
 const Register = ({user, setUser}) => {
   const [errorMessages, setErrorMessages] = useState([]);
-  const [registrationSuccess, setRegistrationSuccess] = useState(false);
-
   const navigate = useNavigate();
-  const register = async (event) => {
-    event.preventDefault();
-    const {email, password, reppassword} = document.forms[0];
-    // console.log(email.value, password.value)
+  const register = async (formValues) => {
+    console.log('Success:', formValues);
     const requestOptions = {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-        email: email.value,
-        password: password.value,
-        passwordConfirm: reppassword.value,
+        email: formValues.username,
+        password: formValues.password,
+        passwordConfirm: formValues.reppassword,
       }),
     };
-    return await fetch(
-        "api/account/register",
-        requestOptions,
-    )
+    return await fetch('api/account/register', requestOptions)
         .then((response) => {
-        // console.log(response.status)
-
+          // console.log(response.status)
           response.status === 200 &&
-          setUser({isAuthenticated: true, userName: email.value});
+setUser({isAuthenticated: true, userName: ''});
           return response.json();
         })
         .then(
@@ -35,15 +27,15 @@ const Register = ({user, setUser}) => {
               console.log('Data:', data);
               if (
                 typeof data !== 'undefined' &&
-            typeof data.userName !== 'undefined'
+typeof data.userName !== 'undefined'
               ) {
-                setUser({isAuthenticated: true, userName: data.userName});
-                setRegistrationSuccess(true); // <-- добавьте эту строку
+                setUser({isAuthenticated: true, userName: data.userName, userRole: data.userRole});
                 navigate('/');
               }
               typeof data !== 'undefined' &&
-            typeof data.error !== 'undefined' &&
-            setErrorMessages(data.error);
+typeof data.error !== 'undefined' &&
+typeof data.userRole !== 'undefined';
+setErrorMessages(data.error);
             },
             (error) => {
               console.log(error);
@@ -55,30 +47,55 @@ const Register = ({user, setUser}) => {
   return (
     <>
       {user.isAuthenticated ? (
-        <h3>Пользователь {user.userName} уже вошел в систему</h3>
-      ) : (
-        <>
-          <h3>Регистрация</h3>
-          <form onSubmit={register}>
-            <label>Пользователь </label>
-            <input type="text" name="email" placeholder="Логин" />
-            <br />
-            <label>Пароль </label>
-            <input type="text" name="password" placeholder="Пароль" />
-            <br />
-            <label>Повторите Пароль </label>
-            <input type="text" name="reppassword"
-              placeholder="Пароль" />
-            <br />
-            <button type="submit">Зарегистрироваться</button>
-          </form>
-          {registrationSuccess && (
-            // eslint-disable-next-line max-len
-            <p>Регистрация прошла успешно. Вы будете перенаправлены на главную страницу.</p>
-          )}
-          {renderErrorMessage()}
-        </>
-      )}
+<h3>Пользователь {user.userName} с ролью {user.userRole} успешно вошел в систему</h3>
+) : (
+<>
+  <h3>Регистрация</h3>
+  <Form
+    onFinish={register}
+    name="basic"
+    labelCol={{span: 8}}
+    wrapperCol={{span: 16}}
+    style={{maxWidth: 600}}
+    initialValues={{remember: true}}
+    onFinishFailed={renderErrorMessage}
+    autoComplete="off"
+  >
+    <Form.Item
+      label="Логин"
+      name="username"
+      rules={[
+        {required: true, message: 'Please input your username!'},
+      ]}
+    >
+      <Input />
+    </Form.Item>
+    <Form.Item
+      label="Пароль"
+      name="password"
+      rules={[
+        {required: true, message: 'Please input your password!'},
+      ]}
+    >
+      <Input.Password />
+    </Form.Item>
+    <Form.Item
+      label="Повторите Пароль"
+      name="reppassword"
+      rules={[
+        {required: true, message: 'Please input your password!'},
+      ]}
+    >
+      <Input.Password />
+    </Form.Item>
+    <Form.Item wrapperCol={{offset: 8, span: 16}}>
+      <Button type="primary" htmlType="submit">
+Отправить
+      </Button>
+    </Form.Item>
+  </Form>
+</>
+)}
     </>
   );
 };

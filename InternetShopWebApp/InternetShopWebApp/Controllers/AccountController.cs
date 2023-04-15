@@ -2,24 +2,25 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection.Metadata.Ecma335;
 using WebAPI.Models;
-namespace InternetShopWebApp.Controllers
+
+namespace ASPNetCoreApp.Controllers
 {
     [Produces("application/json")]
     public class AccountController : Controller
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
         }
+
         [HttpPost]
         [Route("api/account/register")]
-
-[AllowAnonymous]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel model)
         {
             if (ModelState.IsValid)
@@ -59,6 +60,7 @@ namespace InternetShopWebApp.Controllers
                 return Created("", errorMsg);
             }
         }
+
         [HttpPost]
         [Route("api/account/login")]
         //[AllowAnonymous]
@@ -67,15 +69,11 @@ namespace InternetShopWebApp.Controllers
             if (ModelState.IsValid)
             {
                 var result =
-                await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+                    await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
                 if (result.Succeeded)
                 {
-                    User usr = await GetCurrentUserAsync();
-                    if (usr == null)
-                    {
-                        return Unauthorized(new { message = "Ошибка выполнения авторизации" });
-                    }
-                    IList<string> roles = await _userManager.GetRolesAsync(usr);
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    IList<string>? roles = await _userManager.GetRolesAsync(user);
                     string? userRole = roles.FirstOrDefault();
                     return Ok(new { message = "Выполнен вход", userName = model.Email, userRole });
                 }
@@ -89,8 +87,7 @@ namespace InternetShopWebApp.Controllers
                     };
                     return Created("", errorMsg);
                 }
-            
-}
+            }
             else
             {
                 var errorMsg = new
@@ -101,6 +98,7 @@ namespace InternetShopWebApp.Controllers
                 return Created("", errorMsg);
             }
         }
+
         [HttpPost]
         [Route("api/account/logoff")]
         public async Task<IActionResult> LogOff()
@@ -114,6 +112,7 @@ namespace InternetShopWebApp.Controllers
             await _signInManager.SignOutAsync();
             return Ok(new { message = "Выполнен выход", userName = usr.UserName });
         }
+
         [HttpGet]
         [Route("api/account/isauthenticated")]
         public async Task<IActionResult> IsAuthenticated()
@@ -126,6 +125,7 @@ namespace InternetShopWebApp.Controllers
             IList<string> roles = await _userManager.GetRolesAsync(usr);
             string? userRole = roles.FirstOrDefault();
             return Ok(new { message = "Сессия активна", userName = usr.UserName, userRole });
+
         }
         private Task<User> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }
