@@ -12,34 +12,34 @@ namespace InternetShopWebApp.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly Context.ShopContext _context;
-        public ProductController(Context.ShopContext context)
+        private readonly Context.InternetShopContext _context;
+        public ProductController(Context.InternetShopContext context)
         {
             _context = context;
-            if (!_context.Product.Any())
-            {
-                _context.Product.Add(new ProductModel
-                {
-                    Product_Code = 1,
-                    Name = "Nokia",
-                    CategoryID = 1,
-                    Description = "asdasd"
-                });
-                _context.SaveChanges();
-            }
+            //if (!_context.Product.Any())
+            //{
+            //    _context.Product.Add(new Product
+            //    {
+            //        Product_Code = 1,
+            //        Name = "Nokia",
+            //        CategoryID = 1,
+            //        Desctription = "asdasd"
+            //    });
+            //    _context.SaveChanges();
+            //}
         }
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductModel>>> GetAllProduct()
+        public async Task<ActionResult<IEnumerable<ProductTable>>> GetAllProduct()
         {
-            return await _context.Product.ToListAsync();
+            return await _context.ProductTables.ToListAsync();
         }
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductModel>> GetProduct(int id)
+        public async Task<ActionResult<ProductTable>> GetProduct(int id)
         {
-            var blog = await _context.Product.FindAsync(id);
+            var blog = await _context.ProductTables.FindAsync(id);
             if (blog == null)
             {
                 return NotFound();
@@ -49,22 +49,22 @@ namespace InternetShopWebApp.Controllers
 
         // POST: api/Product
         [HttpPost]
-        public async Task<ActionResult<ProductModel>> NewProduct(ProductModel Product)
+        public async Task<ActionResult<ProductTable>> NewProduct(ProductTable Product)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            _context.Product.Add(Product);
+            _context.ProductTables.Add(Product);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetProduct", new { id = Product.Product_Code }, Product);
+            return CreatedAtAction("GetProduct", new { id = Product.ProductCode }, Product);
         }
 
         // PUT: api/Product/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, ProductModel Product)
+        public async Task<IActionResult> PutProduct(int id, ProductTable Product)
         {
-            if (id != Product.Product_Code)
+            if (id != Product.ProductCode)
             {
                 return BadRequest();
             }
@@ -89,7 +89,7 @@ namespace InternetShopWebApp.Controllers
 
         private bool ProductExists(int id)
         {
-            return _context.Product.Any(e => e.Product_Code == id);
+            return _context.ProductTables.Any(e => e.ProductCode == id);
         }
 
         // DELETE: api/Product/5
@@ -97,12 +97,12 @@ namespace InternetShopWebApp.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var blog = await _context.Product.FindAsync(id);
+            var blog = await _context.ProductTables.FindAsync(id);
             if (blog == null)
             {
                 return NotFound();
             }
-            _context.Product.Remove(blog);
+            _context.ProductTables.Remove(blog);
             await _context.SaveChangesAsync();
             return NoContent();
         }

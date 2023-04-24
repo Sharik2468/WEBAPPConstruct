@@ -12,36 +12,43 @@ namespace InternetShopWebApp.Controllers
     [ApiController]
     public class OrderItemController : ControllerBase
     {
-        private readonly Context.ShopContext _context;
-        public OrderItemController(Context.ShopContext context)
+        private readonly Context.InternetShopContext _context;
+        public OrderItemController(Context.InternetShopContext context)
         {
             _context = context;
-            if (!_context.OrderItem.Any())
-            {
-                _context.OrderItem.Add(new OrderItemModel
-                {
-                    Order_Item_Code = 1,
-                    Order_Sum = 100,
-                    Amount_Order_Item = 1,
-                    Product_Code = 1,
-                    Order_Code = 1,
-                    Status_Order_Item_Table_ID = 1
-                });
-                _context.SaveChanges();
-            }
+            //if (!_context.OrderItem.Any())
+            //{
+            //    _context.OrderItem.Add(new OrderItemModel
+            //    {
+            //        Order_Item_Code = 1,
+            //        Order_Sum = 100,
+            //        Amount_Order_Item = 1,
+            //        Product_Code = 1,
+            //        Order_Code = 1,
+            //        Status_Order_Item_Table_ID = 1
+            //    });
+            //    _context.SaveChanges();
+            //}
         }
+
+        //// GET: api/OrderItems
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<OrderItemModel>>> GetAllOrderItem()
+        //{
+        //    return await _context.OrderItem.Include(p=>p.Products).ToListAsync();
+        //}
 
         // GET: api/OrderItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderItemModel>>> GetAllOrderItem()
+        public async Task<ActionResult<IEnumerable<OrderItemTable>>> GetAllOrderItem()
         {
-            return await _context.OrderItem.Include(p=>p.Products).ToListAsync();
+            return await _context.OrderItemTables.ToListAsync();
         }
         // GET: api/OrderItems/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<OrderItemModel>> GetOrderItem(int id)
+        public async Task<ActionResult<OrderItemTable>> GetOrderItem(int id)
         {
-            var blog = await _context.OrderItem.FindAsync(id);
+            var blog = await _context.OrderItemTables.FindAsync(id);
             if (blog == null)
             {
                 return NotFound();
@@ -51,22 +58,22 @@ namespace InternetShopWebApp.Controllers
 
         // POST: api/OrderItem
         [HttpPost]
-        public async Task<ActionResult<OrderItemModel>> NewOrderItem(OrderItemModel OrderItem)
+        public async Task<ActionResult<OrderItemTable>> NewOrderItem(OrderItemTable OrderItem)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            _context.OrderItem.Add(OrderItem);
+            _context.OrderItemTables.Add(OrderItem);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetOrderItem", new { id = OrderItem.Order_Item_Code }, OrderItem);
+            return CreatedAtAction("GetOrderItem", new { id = OrderItem.OrderItemCode }, OrderItem);
         }
 
         // PUT: api/OrderItem/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrderItem(int id, OrderItemModel OrderItem)
+        public async Task<IActionResult> PutOrderItem(int id, OrderItemTable OrderItem)
         {
-            if (id != OrderItem.Order_Item_Code)
+            if (id != OrderItem.OrderItemCode)
             {
                 return BadRequest();
             }
@@ -91,7 +98,7 @@ namespace InternetShopWebApp.Controllers
 
         private bool OrderItemExists(int id)
         {
-            return _context.OrderItem.Any(e => e.Order_Item_Code == id);
+            return _context.OrderItemTables.Any(e => e.OrderItemCode == id);
         }
 
         // DELETE: api/OrderItem/5
@@ -99,12 +106,12 @@ namespace InternetShopWebApp.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteOrderItem(int id)
         {
-            var blog = await _context.OrderItem.FindAsync(id);
+            var blog = await _context.OrderItemTables.FindAsync(id);
             if (blog == null)
             {
                 return NotFound();
             }
-            _context.OrderItem.Remove(blog);
+            _context.OrderItemTables.Remove(blog);
             await _context.SaveChangesAsync();
             return NoContent();
         }

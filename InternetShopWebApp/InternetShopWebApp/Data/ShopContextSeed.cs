@@ -10,84 +10,84 @@ namespace InternetShopWebApp.Data
 {
     public class ShopContextSeed
     {
-        public static async Task SeedAsync(ShopContext context)
+        public static async Task SeedAsync(InternetShopContext context)
         {
-            try
-            {
-                context.Database.EnsureCreated();
-                if (context.Product.Any())
-                {
-                    return;
-                }
+            //try
+            //{
+            //    context.Database.EnsureCreated();
+            //    if (context.Product.Any())
+            //    {
+            //        return;
+            //    }
 
-                var cathegories = new CathegoryModel[]
-                {
-                    new CathegoryModel {
-                    Cathegory_Name = "Smartphones",
-                    Parent_ID=1
-                    },
+            //    var cathegories = new CategoryModel[]
+            //    {
+            //        new CategoryModel {
+            //        Category_Name = "Smartphones",
+            //        Parent_ID=1
+            //        },
 
-                    new CathegoryModel
-                    {
-                    Cathegory_Name = "Consoles",
-                    Parent_ID=2
-                    }
-                };
-                foreach (CathegoryModel cathegory in cathegories)
-                {
-                    context.Cathegory.Add(cathegory);
-                }
-                await context.SaveChangesAsync();
+            //        new CategoryModel
+            //        {
+            //        Category_Name = "Consoles",
+            //        Parent_ID=2
+            //        }
+            //    };
+            //    foreach (CategoryModel cathegory in cathegories)
+            //    {
+            //        context.Cathegory.Add(cathegory);
+            //    }
+            //    await context.SaveChangesAsync();
 
-                var orderitems = new OrderItemModel[]
-                {
-                    new OrderItemModel {
-                    Order_Sum = 100,
-                    Amount_Order_Item = 1,
-                    Product_Code = 1,
-                    Order_Code = 1,
-                    Status_Order_Item_Table_ID = 1
-                    },
+            //    var orderitems = new OrderItemModel[]
+            //    {
+            //        new OrderItemModel {
+            //        Order_Sum = 100,
+            //        Amount_Order_Item = 1,
+            //        Product_Code = 1,
+            //        Order_Code = 1,
+            //        Status_Order_Item_Table_ID = 1
+            //        },
 
-                    new OrderItemModel
-                    {
-                    Order_Sum = 100,
-                    Amount_Order_Item = 1,
-                    Product_Code = 2,
-                    Order_Code = 1,
-                    Status_Order_Item_Table_ID = 1
-                    }
-                };
-                foreach (OrderItemModel orderitem in orderitems)
-                {
-                    context.OrderItem.Add(orderitem);
-                }
-                await context.SaveChangesAsync();
+            //        new OrderItemModel
+            //        {
+            //        Order_Sum = 100,
+            //        Amount_Order_Item = 1,
+            //        Product_Code = 2,
+            //        Order_Code = 1,
+            //        Status_Order_Item_Table_ID = 1
+            //        }
+            //    };
+            //    foreach (OrderItemModel orderitem in orderitems)
+            //    {
+            //        context.OrderItem.Add(orderitem);
+            //    }
+            //    await context.SaveChangesAsync();
 
-                var products = new ProductModel[]
-                {
-                    new ProductModel {
-                    Name = "Nokia",
-                    CategoryID = 1,
-                    OrderItem_Code=1,
-                    Description = "asdasd" },
+            //    var products = new Product[]
+            //    {
+            //        new Product {
+            //        Name = "Nokia",
+            //        CategoryID = 1,
+            //        //OrderItem_Code=1,
+            //        Desctription = "asdasd" },
 
-                    new ProductModel {
-                    Name = "Samsung",
-                    CategoryID = 1,
-                    OrderItem_Code=2,
-                    Description = "safasgag" },
-                };
-                foreach (ProductModel product in products)
-                {
-                    context.Product.Add(product);
-                }
-                await context.SaveChangesAsync();
-            }
-            catch
-            {
-                throw;
-            }
+            //        new Product {
+            //        Name = "Samsung",
+            //        CategoryID = 1,
+            //        //OrderItem_Code=2,
+            //        Desctription = "safasgag" },
+            //    };
+            //    foreach (Product product in products)
+            //    {
+            //        context.Product.Add(product);
+            //    }
+            //    await context.SaveChangesAsync();
+            //}
+            //catch
+            //{
+            //    throw;
+            //}
         }
     }
 }

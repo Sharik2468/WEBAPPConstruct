@@ -24,8 +24,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddIdentity<User, IdentityRole>()
-.AddEntityFrameworkStores<ShopContext>();
-builder.Services.AddDbContext<ShopContext>();
+.AddEntityFrameworkStores<InternetShopContext>();
+builder.Services.AddDbContext<InternetShopContext>();
 builder.Services.AddControllers().AddJsonOptions(x =>
 x.JsonSerializerOptions.ReferenceHandler =
 ReferenceHandler.IgnoreCycles);
@@ -39,7 +39,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.Cookie.Name = "BloggingApp";
+    options.Cookie.Name = "ShoppingApp";
     options.LoginPath = "/";
     options.AccessDeniedPath = "/";
     options.LogoutPath = "/";
@@ -62,8 +62,9 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var shopInternetContext =
-    scope.ServiceProvider.GetRequiredService<ShopContext>();
+    scope.ServiceProvider.GetRequiredService<InternetShopContext>();
     await ShopContextSeed.SeedAsync(shopInternetContext);
+
     await IdentitySeed.CreateUserRoles(scope.ServiceProvider);
 }
 
