@@ -49,6 +49,21 @@ namespace InternetShopWebApp.Controllers
             return blog;
         }
 
+        [HttpGet("GetImage/{id}")]
+        public IActionResult GetImage(int id)
+        {
+            // Загрузите байты изображения из базы данных или другого источника по ID
+            byte[] imageBytes = _unitOfWork.ProductRepository.GetByID(id).Image;
+
+            if (imageBytes == null)
+            {
+                return NotFound();
+            }
+
+            return File(imageBytes, "image/jpeg");
+        }
+
+
         // POST: api/Product
         [HttpPost]
         public async Task<ActionResult<ProductTable>> NewProduct(ProductTable Product)
@@ -57,8 +72,8 @@ namespace InternetShopWebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            _context.ProductTables.Add(Product);
-            await _context.SaveChangesAsync();
+            _unitOfWork.ProductRepository.Insert(Product);
+            _unitOfWork.Save();
             return CreatedAtAction("GetProduct", new { id = Product.ProductCode }, Product);
         }
 
@@ -70,10 +85,11 @@ namespace InternetShopWebApp.Controllers
             {
                 return BadRequest();
             }
-            _context.Entry(Product).State = EntityState.Modified;
+            //_context.Entry(Product).State = EntityState.Modified;
+            _unitOfWork.ProductRepository.Update(Product);
             try
             {
-                await _context.SaveChangesAsync();
+                _unitOfWork.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -91,7 +107,7 @@ namespace InternetShopWebApp.Controllers
 
         private bool ProductExists(int id)
         {
-            return _context.ProductTables.Any(e => e.ProductCode == id);
+            return _unitOfWork.ProductRepository.GetByID(id) != null;
         }
 
         // DELETE: api/Product/5
@@ -99,13 +115,14 @@ namespace InternetShopWebApp.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var blog = await _context.ProductTables.FindAsync(id);
-            if (blog == null)
+            //var blog = await _context.ProductTables.FindAsync(id);
+            var product = _unitOfWork.ProductRepository.GetByID(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            _context.ProductTables.Remove(blog);
-            await _context.SaveChangesAsync();
+            _unitOfWork.ProductRepository.Delete(product);
+            _unitOfWork.Save();
             return NoContent();
         }
     }

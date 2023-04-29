@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable max-len */
@@ -11,6 +12,9 @@ import Layout from './Components/Layout/LayoutAD';
 import LogIn from './Components/Authorization/LogIn';
 import Register from './Components/Authorization/Register';
 import LogOut from './Components/Authorization/LogOut';
+import Product from './Components/Products/Products';
+import StartPage from './Components/Layout/StartPage';
+import ProductPage from './Components/Products/ProductPage';
 
 const App = () => {
   const [OrderItems, setOrderItems] = useState([]);
@@ -18,13 +22,29 @@ const App = () => {
   const removeOrderItem = (removeId) =>
     setOrderItems(OrderItems.filter(({order_Item_Code}) =>
       order_Item_Code !== removeId));
+
   const [user, setUser] = useState({isAuthenticated: false, userName: '', userRole: ''});
+
+  const [Products, setProducts] = useState([]);
+  const addProduct = (Product) => setProducts([...Products, Product]);
+  const removeProduct = (removeId) =>
+    setProducts(Products.filter(({ProductCode}) =>
+      ProductCode !== removeId));
 
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout user={user} />}>
-          <Route index element={<h3>Главная страница</h3>} />
+          <Route index element={
+            <>
+              <StartPage
+                user={user}
+                Products={Products}
+                setProducts={setProducts}
+                removeProduct={removeProduct}
+              />
+            </>
+          } />
           <Route
             path="/OrderItems"
             element={
@@ -51,6 +71,20 @@ const App = () => {
             path="/logout"
             element={<LogOut user={user} setUser={setUser} />}
           />
+          <Route
+            path="/products"
+            element={
+              <>
+                <Product
+                  user={user}
+                  Products={Products}
+                  setProducts={setProducts}
+                  removeProduct={removeProduct}
+                />
+              </>
+            }
+          />
+          <Route path="/products/:productCode" element={<ProductPage />} />
           <Route path="*" element={<h3>404</h3>} />
         </Route>
       </Routes>

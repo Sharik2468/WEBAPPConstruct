@@ -10,6 +10,7 @@ namespace InternetShopWebApp.Repository
         private GenericRepository<LocationTable> _locationRepository;
         private GenericRepository<ProductTable> _productRepository;
         private GenericRepository<OrderItemTable> _orderItemRepository;
+        private GenericRepository<OrderTable> _orderRepository;
 
         public GenericRepository<CategoryTable> CategoryRepository
         {
@@ -60,6 +61,19 @@ namespace InternetShopWebApp.Repository
                     this._orderItemRepository = new GenericRepository<OrderItemTable>(context);
                 }
                 return _orderItemRepository;
+            }
+        }
+
+        public GenericRepository<OrderTable> OrderRepository
+        {
+            get
+            {
+
+                if (this._orderRepository == null)
+                {
+                    this._orderRepository = new GenericRepository<OrderTable>(context);
+                }
+                return _orderRepository;
             }
         }
 

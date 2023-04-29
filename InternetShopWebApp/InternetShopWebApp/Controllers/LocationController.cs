@@ -1,37 +1,51 @@
-﻿using InternetShopWebApp.Models;
-using InternetShopWebApp.Repository;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using InternetShopWebApp.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Data;
-using System.Data.Entity.Infrastructure;
+using InternetShopWebApp.Repository;
 
 namespace InternetShopWebApp.Controllers
 {
-    public class LocationController : Controller
+    [Route("api/[controller]")]
+    [EnableCors]
+    [ApiController]
+    public class LocationController : ControllerBase
     {
-        private UnitOfWork _unitOfWork = new UnitOfWork();
-
+        //private readonly Context.InternetShopContext _context;
+        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
+        //public LocationController(Context.InternetShopContext context)
+        //{
+        //    _context = context;
+        //    //if (!_context.Location.Any())
+        //    //{
+        //    //    _context.Location.Add(new Location
+        //    //    {
+        //    //        Location_Code = 1,
+        //    //        Name = "Nokia",
+        //    //        CategoryID = 1,
+        //    //        Desctription = "asdasd"
+        //    //    });
+        //    //    _context.SaveChanges();
+        //    //}
+        //}
 
         // GET: api/Locations
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LocationTable>>> GetAllLocation()
         {
-            //return await _context.LocationTables.ToListAsync();
-            var Location = from s in _unitOfWork.LocationRepository.Get() select s;
-            return Location.ToList();
+            return _unitOfWork.LocationRepository.Get().ToList();
         }
         // GET: api/Locations/5
         [HttpGet("{id}")]
         public async Task<ActionResult<LocationTable>> GetLocation(int id)
         {
-            //var blog = await _context.LocationTables.FindAsync(id);
-            var Location = _unitOfWork.LocationRepository.GetByID(id);
-            if (Location == null)
+            var blog = _unitOfWork.LocationRepository.GetByID(id);
+            if (blog == null)
             {
                 return NotFound();
             }
-            return Location;
+            return blog;
         }
 
         // POST: api/Location
@@ -42,9 +56,7 @@ namespace InternetShopWebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            //_context.LocationTables.Add(Location);
             _unitOfWork.LocationRepository.Insert(Location);
-            //await _context.SaveChangesAsync();
             _unitOfWork.Save();
             return CreatedAtAction("GetLocation", new { id = Location.LocationCode }, Location);
         }
@@ -61,7 +73,6 @@ namespace InternetShopWebApp.Controllers
             _unitOfWork.LocationRepository.Update(Location);
             try
             {
-                //await _context.SaveChangesAsync();
                 _unitOfWork.Save();
             }
             catch (DbUpdateConcurrencyException)
@@ -80,7 +91,6 @@ namespace InternetShopWebApp.Controllers
 
         private bool LocationExists(int id)
         {
-            //return _context.LocationTables.Any(e => e.LocationId == id);
             return _unitOfWork.LocationRepository.GetByID(id) != null;
         }
 
@@ -89,12 +99,13 @@ namespace InternetShopWebApp.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteLocation(int id)
         {
-            var cat = _unitOfWork.LocationRepository.GetByID(id);
-            if (cat == null)
+            //var blog = await _context.LocationTables.FindAsync(id);
+            var location = _unitOfWork.LocationRepository.GetByID(id);
+            if (location == null)
             {
                 return NotFound();
             }
-            _unitOfWork.LocationRepository.Delete(cat);
+            _unitOfWork.LocationRepository.Delete(location);
             _unitOfWork.Save();
             return NoContent();
         }

@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable camelcase */
 import React, {useEffect} from 'react';
 import './Style.css';
 
@@ -10,7 +12,7 @@ const OrderItem = ({user, OrderItems, setOrderItems, removeOrderItem}) => {
       };
 
       try {
-        const response = await fetch("/api/OrderItem/", requestOptions);
+        const response = await fetch('/api/OrderItem/', requestOptions);
         const data = await response.json();
         console.log('Data:', data);
         setOrderItems(data);
@@ -28,7 +30,7 @@ const OrderItem = ({user, OrderItems, setOrderItems, removeOrderItem}) => {
       method: 'DELETE',
     };
     // eslint-disable-next-line camelcase
-    return await fetch("/api/OrderItem/${order_Item_Code}",
+    return await fetch('/api/OrderItem/${order_Item_Code}',
         requestOptions)
 
         .then((response) => {
