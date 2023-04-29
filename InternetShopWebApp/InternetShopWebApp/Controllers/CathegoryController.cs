@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using InternetShopWebApp.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
-using System.Data;
+using InternetShopWebApp.Repository;
+using InternetShopWebApp.Context;
 
 namespace InternetShopWebApp.Controllers
 {
@@ -13,38 +14,29 @@ namespace InternetShopWebApp.Controllers
 
     public class CathegoryController : ControllerBase
     {
-        private readonly Context.InternetShopContext _context;
-        public CathegoryController(Context.InternetShopContext context)
-        {
-            _context = context;
-            //if (!_context.Cathegory.Any())
-            //{
-            //    _context.Cathegory.Add(new CategoryModel
-            //    {
-            //        Category_ID = 1,
-            //        Category_Name = "Smartphones",
-            //        Parent_ID = 1
-            //    });
-            //    _context.SaveChanges();
-            //}
-        }
+
+        private UnitOfWork _unitOfWork = new UnitOfWork();
+
 
         // GET: api/Cathegorys
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CategoryTable>>> GetAllCathegory()
         {
-            return await _context.CategoryTables.ToListAsync();
+            //return await _context.CategoryTables.ToListAsync();
+            var category = from s in _unitOfWork.CategoryRepository.Get() select s;
+            return category.ToList();
         }
         // GET: api/Cathegorys/5
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryTable>> GetCathegory(int id)
         {
-            var blog = await _context.CategoryTables.FindAsync(id);
-            if (blog == null)
+            //var blog = await _context.CategoryTables.FindAsync(id);
+            var category = _unitOfWork.CategoryRepository.GetByID(id);
+            if (category == null)
             {
                 return NotFound();
             }
-            return blog;
+            return category;
         }
 
         // POST: api/Cathegory
@@ -55,8 +47,10 @@ namespace InternetShopWebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            _context.CategoryTables.Add(Cathegory);
-            await _context.SaveChangesAsync();
+            //_context.CategoryTables.Add(Cathegory);
+            _unitOfWork.CategoryRepository.Insert(Cathegory);
+            //await _context.SaveChangesAsync();
+            _unitOfWork.Save();
             return CreatedAtAction("GetCathegory", new { id = Cathegory.CategoryId }, Cathegory);
         }
 
@@ -68,10 +62,12 @@ namespace InternetShopWebApp.Controllers
             {
                 return BadRequest();
             }
-            _context.Entry(Cathegory).State = EntityState.Modified;
+            //_context.Entry(Cathegory).State = EntityState.Modified;
+            _unitOfWork.CategoryRepository.Update(Cathegory);
             try
             {
-                await _context.SaveChangesAsync();
+                //await _context.SaveChangesAsync();
+                _unitOfWork.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -89,7 +85,8 @@ namespace InternetShopWebApp.Controllers
 
         private bool CathegoryExists(int id)
         {
-            return _context.CategoryTables.Any(e => e.CategoryId == id);
+            //return _context.CategoryTables.Any(e => e.CategoryId == id);
+            return _unitOfWork.CategoryRepository.GetByID(id) != null;
         }
 
         // DELETE: api/Cathegory/5
@@ -97,13 +94,13 @@ namespace InternetShopWebApp.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteCathegory(int id)
         {
-            var blog = await _context.CategoryTables.FindAsync(id);
-            if (blog == null)
+            var cat = _unitOfWork.CategoryRepository.GetByID(id);
+            if (cat == null)
             {
                 return NotFound();
             }
-            _context.CategoryTables.Remove(blog);
-            await _context.SaveChangesAsync();
+            _unitOfWork.CategoryRepository.Delete(cat);
+            _unitOfWork.Save();
             return NoContent();
         }
     }

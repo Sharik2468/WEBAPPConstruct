@@ -4,6 +4,7 @@ using InternetShopWebApp.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using InternetShopWebApp.Repository;
 
 namespace InternetShopWebApp.Controllers
 {
@@ -12,34 +13,35 @@ namespace InternetShopWebApp.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly Context.InternetShopContext _context;
-        public ProductController(Context.InternetShopContext context)
-        {
-            _context = context;
-            //if (!_context.Product.Any())
-            //{
-            //    _context.Product.Add(new Product
-            //    {
-            //        Product_Code = 1,
-            //        Name = "Nokia",
-            //        CategoryID = 1,
-            //        Desctription = "asdasd"
-            //    });
-            //    _context.SaveChanges();
-            //}
-        }
+        //private readonly Context.InternetShopContext _context;
+        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
+        //public ProductController(Context.InternetShopContext context)
+        //{
+        //    _context = context;
+        //    //if (!_context.Product.Any())
+        //    //{
+        //    //    _context.Product.Add(new Product
+        //    //    {
+        //    //        Product_Code = 1,
+        //    //        Name = "Nokia",
+        //    //        CategoryID = 1,
+        //    //        Desctription = "asdasd"
+        //    //    });
+        //    //    _context.SaveChanges();
+        //    //}
+        //}
 
         // GET: api/Products
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductTable>>> GetAllProduct()
         {
-            return await _context.ProductTables.ToListAsync();
+            return _unitOfWork.ProductRepository.Get().ToList();
         }
         // GET: api/Products/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductTable>> GetProduct(int id)
         {
-            var blog = await _context.ProductTables.FindAsync(id);
+            var blog = _unitOfWork.ProductRepository.GetByID(id);
             if (blog == null)
             {
                 return NotFound();
