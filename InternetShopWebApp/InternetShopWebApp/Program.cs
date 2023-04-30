@@ -2,6 +2,7 @@ using InternetShopWebApp.Context;
 using InternetShopWebApp.Data;
 using InternetShopWebApp.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);

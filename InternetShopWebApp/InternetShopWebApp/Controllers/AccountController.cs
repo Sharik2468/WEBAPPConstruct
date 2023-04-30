@@ -1,7 +1,9 @@
 ﻿using InternetShopWebApp.Models;
+using InternetShopWebApp.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using WebAPI.Models;
 
 namespace ASPNetCoreApp.Controllers
@@ -103,7 +105,7 @@ namespace ASPNetCoreApp.Controllers
         [Route("api/account/logoff")]
         public async Task<IActionResult> LogOff()
         {
-            User usr = await GetCurrentUserAsync();
+            User usr = await this.GetCurrentUserAsync();
             if (usr == null)
             {
                 return Unauthorized(new { message = "Сначала выполните вход" });
@@ -117,16 +119,39 @@ namespace ASPNetCoreApp.Controllers
         [Route("api/account/isauthenticated")]
         public async Task<IActionResult> IsAuthenticated()
         {
-            User usr = await GetCurrentUserAsync();
+            User usr = await this.GetCurrentUserAsync();
             if (usr == null)
             {
                 return Unauthorized(new { message = "Вы Гость. Пожалуйста, выполните вход" });
             }
             IList<string> roles = await _userManager.GetRolesAsync(usr);
             string? userRole = roles.FirstOrDefault();
-            return Ok(new { message = "Сессия активна", userName = usr.UserName, userRole });
+            return Ok(new { message = "Сессия активна", userName = usr.UserName, userRole, userCode = usr?.Id });
 
         }
+
+        public List<User> ListUsers()
+        {
+            var users = _userManager.Users;
+            return users.ToList();
+        }
+
+        [HttpGet]
+        [Route("api/account/getid")]
+        public async Task<IActionResult> GetUserId()
+        {
+            var users = ListUsers();
+            User usr = await this.GetCurrentUserAsync();
+            if (usr == null)
+            {
+                return Unauthorized(new { message = "Вы Гость. Пожалуйста, выполните вход" });
+            }
+
+            var currentUserId = users.IndexOf(users.FirstOrDefault(a => a.Id == usr.Id));
+            return Ok(new { message = "Сессия активна", userCode = currentUserId});
+
+        }
+
         private Task<User> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
     }
 }

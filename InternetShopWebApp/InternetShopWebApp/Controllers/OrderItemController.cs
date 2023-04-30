@@ -4,6 +4,10 @@ using InternetShopWebApp.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
+using InternetShopWebApp.Repository;
+using InternetShopWebApp.Services;
+using Microsoft.AspNetCore.Identity;
+using ASPNetCoreApp.Controllers;
 
 namespace InternetShopWebApp.Controllers
 {
@@ -12,24 +16,8 @@ namespace InternetShopWebApp.Controllers
     [ApiController]
     public class OrderItemController : ControllerBase
     {
-        private readonly Context.InternetShopContext _context;
-        public OrderItemController(Context.InternetShopContext context)
-        {
-            _context = context;
-            //if (!_context.OrderItem.Any())
-            //{
-            //    _context.OrderItem.Add(new OrderItemModel
-            //    {
-            //        Order_Item_Code = 1,
-            //        Order_Sum = 100,
-            //        Amount_Order_Item = 1,
-            //        Product_Code = 1,
-            //        Order_Code = 1,
-            //        Status_Order_Item_Table_ID = 1
-            //    });
-            //    _context.SaveChanges();
-            //}
-        }
+        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
+        private readonly OrderServices _orderService = new OrderServices();
 
         //// GET: api/OrderItems
         //[HttpGet]
@@ -42,18 +30,19 @@ namespace InternetShopWebApp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderItemTable>>> GetAllOrderItem()
         {
-            return await _context.OrderItemTables.ToListAsync();
+            return _unitOfWork.OrderItemRepository.Get().ToList();
         }
         // GET: api/OrderItems/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<OrderItemTable>> GetOrderItem(int id)
+        public async Task<ActionResult<IEnumerable<OrderItemTable>>> GetOrderItem(int id)
         {
-            var blog = await _context.OrderItemTables.FindAsync(id);
-            if (blog == null)
+            //var orderitem = _unitOfWork.OrderItemRepository.GetByID(id);
+            var orderitem = _orderService.GetAllActiveOrderItemsByClientId(id);
+            if (orderitem == null)
             {
                 return NotFound();
             }
-            return blog;
+            return orderitem.ToList();
         }
 
         // POST: api/OrderItem
@@ -64,8 +53,8 @@ namespace InternetShopWebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            _context.OrderItemTables.Add(OrderItem);
-            await _context.SaveChangesAsync();
+            _unitOfWork.OrderItemRepository.Insert(OrderItem);
+            _unitOfWork.Save();
             return CreatedAtAction("GetOrderItem", new { id = OrderItem.OrderItemCode }, OrderItem);
         }
 
@@ -77,10 +66,10 @@ namespace InternetShopWebApp.Controllers
             {
                 return BadRequest();
             }
-            _context.Entry(OrderItem).State = EntityState.Modified;
+            _unitOfWork.OrderItemRepository.Update(OrderItem);
             try
             {
-                await _context.SaveChangesAsync();
+                _unitOfWork.Save();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -98,7 +87,7 @@ namespace InternetShopWebApp.Controllers
 
         private bool OrderItemExists(int id)
         {
-            return _context.OrderItemTables.Any(e => e.OrderItemCode == id);
+            return _unitOfWork.OrderItemRepository.Get().Any(e => e.OrderItemCode == id);
         }
 
         // DELETE: api/OrderItem/5
@@ -106,13 +95,13 @@ namespace InternetShopWebApp.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteOrderItem(int id)
         {
-            var blog = await _context.OrderItemTables.FindAsync(id);
-            if (blog == null)
+            var orderitem = _unitOfWork.OrderItemRepository.GetByID(id);
+            if (orderitem == null)
             {
                 return NotFound();
             }
-            _context.OrderItemTables.Remove(blog);
-            await _context.SaveChangesAsync();
+            _unitOfWork.OrderItemRepository.Delete(orderitem);
+            _unitOfWork.Save();
             return NoContent();
         }
     }
