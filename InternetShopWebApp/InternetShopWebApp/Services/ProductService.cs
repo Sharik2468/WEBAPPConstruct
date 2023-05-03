@@ -36,6 +36,26 @@ namespace InternetShopWebApp.Services
             return resultProducts;
         }
 
+        public List<ProductTable> GetProductsByCategory(string CategoryName)
+        {
+            var allCategory = _unitOfWork.CategoryRepository.Get();
+            var category = allCategory.FirstOrDefault(a => a.CategoryName == CategoryName);
+            var allProducts = _unitOfWork.ProductRepository.Get();
 
+            return allProducts.Where(a => a.CategoryId == category.CategoryId).ToList();
+        }
+
+        public List<ProductTable> GetProductSerach(string SearchName, string CategoryName)
+        {
+            List<ProductTable> productsBySearchName;
+            if (SearchName != null) productsBySearchName = GetProductBySearchName(SearchName);
+            else productsBySearchName = (List<ProductTable>)_unitOfWork.ProductRepository.Get();
+
+            List<ProductTable> productsByCategoryName;
+            if (SearchName != null) productsByCategoryName = GetProductsByCategory(CategoryName);
+            else productsByCategoryName = (List<ProductTable>)_unitOfWork.ProductRepository.Get();
+
+            return productsByCategoryName.Intersect(productsBySearchName).ToList();
+        }
     }
 }

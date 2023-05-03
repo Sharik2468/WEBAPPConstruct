@@ -16,15 +16,13 @@ namespace InternetShopWebApp.Controllers
     [ApiController]
     public class OrderItemController : ControllerBase
     {
-        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
         private readonly OrderServices _orderService = new OrderServices();
+        private readonly UnitOfWork _unitOfWork;
 
-        //// GET: api/OrderItems
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<OrderItemModel>>> GetAllOrderItem()
-        //{
-        //    return await _context.OrderItem.Include(p=>p.Products).ToListAsync();
-        //}
+        public OrderItemController(UnitOfWork newUnitOfWork)
+        {
+            _unitOfWork = newUnitOfWork;
+        }
 
         // GET: api/OrderItems
         [HttpGet]

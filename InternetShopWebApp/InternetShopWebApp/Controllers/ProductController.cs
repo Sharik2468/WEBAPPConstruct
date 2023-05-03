@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using InternetShopWebApp.Repository;
+using InternetShopWebApp.Services;
 
 namespace InternetShopWebApp.Controllers
 {
@@ -13,23 +14,12 @@ namespace InternetShopWebApp.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        //private readonly Context.InternetShopContext _context;
-        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
-        //public ProductController(Context.InternetShopContext context)
-        //{
-        //    _context = context;
-        //    //if (!_context.Product.Any())
-        //    //{
-        //    //    _context.Product.Add(new Product
-        //    //    {
-        //    //        Product_Code = 1,
-        //    //        Name = "Nokia",
-        //    //        CategoryID = 1,
-        //    //        Desctription = "asdasd"
-        //    //    });
-        //    //    _context.SaveChanges();
-        //    //}
-        //}
+        private readonly UnitOfWork _unitOfWork;
+        private readonly ProductService _productService = new ProductService();
+        public ProductController(UnitOfWork newUnitOfWork)
+        {
+            _unitOfWork = newUnitOfWork;
+        }
 
         // GET: api/Products
         [HttpGet]
@@ -41,19 +31,45 @@ namespace InternetShopWebApp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductTable>> GetProduct(int id)
         {
-            var blog = _unitOfWork.ProductRepository.GetByID(id);
-            if (blog == null)
+            var product = _unitOfWork.ProductRepository.GetByID(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            return blog;
+            return product;
+        }
+
+        // GET: api/Products/categorySearch/Бытовая техника
+        [HttpGet("categorySearch/{CategoryName}")]
+        public async Task<ActionResult<IEnumerable<ProductTable>>> GetProductByCategory(string CategoryName)
+        {
+            var product = _productService.GetProductsByCategory(CategoryName);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return product;
+        }
+
+        // GET: api/Products/categorySearch/Бытовая техника
+        [HttpGet("keywordSearch/{keyword}")]
+        public async Task<ActionResult<IEnumerable<ProductTable>>> GetProductByKyeword(string keyword)
+        {
+            var product = _productService.GetProductBySearchName(keyword);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return product;
         }
 
         [HttpGet("GetImage/{id}")]
         public IActionResult GetImage(int id)
         {
             // Загрузите байты изображения из базы данных или другого источника по ID
-            byte[] imageBytes = _unitOfWork.ProductRepository.GetByID(id).Image;
+            byte[] imageBytes = _unitOfWork.ProductRepository.GetByID(id)!=null? 
+                                _unitOfWork.ProductRepository.GetByID(id).Image:
+                                null;
 
             if (imageBytes == null)
             {
@@ -115,7 +131,7 @@ namespace InternetShopWebApp.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            //var blog = await _context.ProductTables.FindAsync(id);
+            //var product = await _context.ProductTables.FindAsync(id);
             var product = _unitOfWork.ProductRepository.GetByID(id);
             if (product == null)
             {

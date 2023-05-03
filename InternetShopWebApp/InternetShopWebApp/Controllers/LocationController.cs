@@ -12,23 +12,12 @@ namespace InternetShopWebApp.Controllers
     [ApiController]
     public class LocationController : ControllerBase
     {
-        //private readonly Context.InternetShopContext _context;
-        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
-        //public LocationController(Context.InternetShopContext context)
-        //{
-        //    _context = context;
-        //    //if (!_context.Location.Any())
-        //    //{
-        //    //    _context.Location.Add(new Location
-        //    //    {
-        //    //        Location_Code = 1,
-        //    //        Name = "Nokia",
-        //    //        CategoryID = 1,
-        //    //        Desctription = "asdasd"
-        //    //    });
-        //    //    _context.SaveChanges();
-        //    //}
-        //}
+        private readonly UnitOfWork _unitOfWork;
+
+        public LocationController(UnitOfWork newUnitOfWork)
+        {
+            _unitOfWork = newUnitOfWork;
+        }
 
         // GET: api/Locations
         [HttpGet]

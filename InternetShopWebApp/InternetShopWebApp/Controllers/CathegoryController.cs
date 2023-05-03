@@ -15,7 +15,12 @@ namespace InternetShopWebApp.Controllers
     public class CathegoryController : ControllerBase
     {
 
-        private UnitOfWork _unitOfWork = new UnitOfWork();
+        private readonly UnitOfWork _unitOfWork;
+
+        public CathegoryController(UnitOfWork newUnitOfWork)
+        {
+            _unitOfWork = newUnitOfWork;
+        }
 
 
         // GET: api/Cathegorys

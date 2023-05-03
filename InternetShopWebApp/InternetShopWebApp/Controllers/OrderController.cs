@@ -13,7 +13,12 @@ namespace InternetShopWebApp.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly UnitOfWork _unitOfWork = new UnitOfWork();
+        private readonly UnitOfWork _unitOfWork;
+
+        public OrderController(UnitOfWork newUnitOfWork)
+        {
+            _unitOfWork = newUnitOfWork;
+        }
 
         // GET: api/Orders
         [HttpGet]

@@ -1,6 +1,7 @@
 using InternetShopWebApp.Context;
 using InternetShopWebApp.Data;
 using InternetShopWebApp.Models;
+using InternetShopWebApp.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Text.Json.Serialization;
@@ -30,6 +31,7 @@ builder.Services.AddDbContext<InternetShopContext>();
 builder.Services.AddControllers().AddJsonOptions(x =>
 x.JsonSerializerOptions.ReferenceHandler =
 ReferenceHandler.IgnoreCycles);
+builder.Services.AddScoped(typeof(UnitOfWork));
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
