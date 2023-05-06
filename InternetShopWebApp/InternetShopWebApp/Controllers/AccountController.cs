@@ -119,6 +119,7 @@ namespace ASPNetCoreApp.Controllers
         [Route("api/account/isauthenticated")]
         public async Task<IActionResult> IsAuthenticated()
         {
+            var users = ListUsers();
             User usr = await this.GetCurrentUserAsync();
             if (usr == null)
             {
@@ -126,7 +127,8 @@ namespace ASPNetCoreApp.Controllers
             }
             IList<string> roles = await _userManager.GetRolesAsync(usr);
             string? userRole = roles.FirstOrDefault();
-            return Ok(new { message = "Сессия активна", userName = usr.UserName, userRole, userCode = usr?.Id });
+            var currentUserId = users.IndexOf(users.FirstOrDefault(a => a.Id == usr.Id));
+            return Ok(new { message = "Сессия активна", userName = usr.UserName, userRole, userCode = usr?.Id, userID=currentUserId, });
 
         }
 

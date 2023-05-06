@@ -39,6 +39,25 @@ namespace InternetShopWebApp.Controllers
             return product;
         }
 
+        // GET: api/Products/Search/Бытовая техника.Телевизор
+        [HttpGet("Search/{SearchWord}")]
+        public async Task<ActionResult<IEnumerable<ProductTable>>> GetProductBySearch(string SearchWord)
+        {
+            string[] words = SearchWord.Split(new char[] { '.' });
+            // new char[] - массив символов-разделителей. Как меня поправили в 
+            // комментариях, в данном случае достаточно написать text.Split(':')
+
+            string first = words[0] == null ? null : words[0];
+            string second = words[1] == null ? null : words[1];
+
+            var product = _productService.GetProductSearch(second, first);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            return product;
+        }
+
         // GET: api/Products/categorySearch/Бытовая техника
         [HttpGet("categorySearch/{CategoryName}")]
         public async Task<ActionResult<IEnumerable<ProductTable>>> GetProductByCategory(string CategoryName)
@@ -53,7 +72,7 @@ namespace InternetShopWebApp.Controllers
 
         // GET: api/Products/categorySearch/Бытовая техника
         [HttpGet("keywordSearch/{keyword}")]
-        public async Task<ActionResult<IEnumerable<ProductTable>>> GetProductByKyeword(string keyword)
+        public async Task<ActionResult<IEnumerable<ProductTable>>> GetProductByKeyword(string keyword)
         {
             var product = _productService.GetProductBySearchName(keyword);
             if (product == null)
@@ -67,8 +86,8 @@ namespace InternetShopWebApp.Controllers
         public IActionResult GetImage(int id)
         {
             // Загрузите байты изображения из базы данных или другого источника по ID
-            byte[] imageBytes = _unitOfWork.ProductRepository.GetByID(id)!=null? 
-                                _unitOfWork.ProductRepository.GetByID(id).Image:
+            byte[] imageBytes = _unitOfWork.ProductRepository.GetByID(id) != null ?
+                                _unitOfWork.ProductRepository.GetByID(id).Image :
                                 null;
 
             if (imageBytes == null)

@@ -36,6 +36,11 @@ namespace InternetShopWebApp.Controllers
         {
             //var orderitem = _unitOfWork.OrderItemRepository.GetByID(id);
             var orderitem = _orderService.GetAllActiveOrderItemsByClientId(id);
+            var products = _unitOfWork.ProductRepository.Get();
+
+            foreach (var item in orderitem)
+                item.ProductCodeNavigation = products.Where(a=>a.ProductCode==item.ProductCode).FirstOrDefault();
+
             if (orderitem == null)
             {
                 return NotFound();
@@ -43,17 +48,26 @@ namespace InternetShopWebApp.Controllers
             return orderitem.ToList();
         }
 
-        // POST: api/OrderItem
-        [HttpPost]
-        public async Task<ActionResult<OrderItemTable>> NewOrderItem(OrderItemTable OrderItem)
+        // POST: api/OrderItem/1.0(Код клиента.Код товара)
+        [HttpPost("{Request}")]
+        public async Task<ActionResult<OrderItemTable>> NewOrderItem(string Request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            _unitOfWork.OrderItemRepository.Insert(OrderItem);
-            _unitOfWork.Save();
-            return CreatedAtAction("GetOrderItem", new { id = OrderItem.OrderItemCode }, OrderItem);
+            string[] words = Request.Split(new char[] { '.' });
+            // new char[] - массив символов-разделителей. Как меня поправили в 
+            // комментариях, в данном случае достаточно написать text.Split(':')
+
+            int first = words[0] == null ? -1 : int.Parse(words[0]);
+            int second = words[1] == null ? -1 : int.Parse(words[1]);
+
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
+            //_unitOfWork.OrderItemRepository.Insert(OrderItem);
+            //_unitOfWork.Save();
+
+            bool success = _orderService.AddNewOrderItem(first, second);
+            return CreatedAtAction("GetOrderItem added?", success);
         }
 
         // PUT: api/OrderItem/5

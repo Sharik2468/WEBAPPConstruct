@@ -12,6 +12,7 @@ import {
   LogoutOutlined,
   ShoppingCartOutlined,
 } from '@ant-design/icons';
+import './LayoutStyle.css';
 
 const {Header, Content, Footer, Sider} = LayoutAntd;
 
@@ -72,20 +73,11 @@ const Layout = ({user}) => {
           {/* ... и так далее */}
         </Menu>
       </Sider>
-      <LayoutAntd>
-        <Header
-          style={{
-            position: 'inherit',
-            top: 0,
-            zIndex: 1,
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
+      <LayoutAntd className="inner-layout">
+        <Header className="header">
           <Button
-            style={{color: 'rgba(255, 255, 255, 0.65)'}}
+            style={{color: 'rgba(255, 255, 255, 0.65)',
+              alignSelf: 'center'}}
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={() => setCollapsed(!collapsed)}
@@ -98,7 +90,7 @@ const Layout = ({user}) => {
             )}
           </div>
         </Header>
-        <Content className="site-layout" style={{padding: '0 50px', margin: '24px 16px'}}>
+        <Content className="content">
           <Outlet />
         </Content>
         <Footer style={{textAlign: 'center'}}>Internet Shop ©2023</Footer>

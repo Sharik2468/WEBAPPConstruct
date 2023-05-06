@@ -13,7 +13,7 @@ namespace InternetShopWebApp.Services
             var orderItems = _orderService.GetAllActiveOrderItemsByClientId(ClientID);
 
             var products = _unitOfWork.ProductRepository.Get();
-            List<ProductTable> resultProducts= new List<ProductTable>();
+            List<ProductTable> resultProducts = new List<ProductTable>();
             foreach (var item in orderItems)
             {
                 resultProducts.Add(products.FirstOrDefault(a => a.ProductCode == item.ProductCode));
@@ -38,22 +38,33 @@ namespace InternetShopWebApp.Services
 
         public List<ProductTable> GetProductsByCategory(string CategoryName)
         {
-            var allCategory = _unitOfWork.CategoryRepository.Get();
-            var category = allCategory.FirstOrDefault(a => a.CategoryName == CategoryName);
-            var allProducts = _unitOfWork.ProductRepository.Get();
+            try
+            {
+                var allCategory = _unitOfWork.CategoryRepository.Get();
+                var category = allCategory.FirstOrDefault(a => a.CategoryName == CategoryName);
+                var allProducts = _unitOfWork.ProductRepository.Get();
 
-            return allProducts.Where(a => a.CategoryId == category.CategoryId).ToList();
+                return (List<ProductTable>)(category == null ? allProducts :
+                    allProducts.Where(a => a.CategoryId == category.CategoryId).ToList());
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
-        public List<ProductTable> GetProductSerach(string SearchName, string CategoryName)
+        public List<ProductTable> GetProductSearch(string SearchName, string CategoryName)
         {
             List<ProductTable> productsBySearchName;
             if (SearchName != null) productsBySearchName = GetProductBySearchName(SearchName);
             else productsBySearchName = (List<ProductTable>)_unitOfWork.ProductRepository.Get();
 
             List<ProductTable> productsByCategoryName;
-            if (SearchName != null) productsByCategoryName = GetProductsByCategory(CategoryName);
+            if (CategoryName != null) productsByCategoryName = GetProductsByCategory(CategoryName);
             else productsByCategoryName = (List<ProductTable>)_unitOfWork.ProductRepository.Get();
+
+            if (productsBySearchName == null) return null;
+            if (productsByCategoryName == null) return null;
 
             return productsByCategoryName.Intersect(productsBySearchName).ToList();
         }

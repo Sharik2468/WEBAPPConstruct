@@ -1,0 +1,25 @@
+/* Layout.css */
+.layout {
+    min-height: 100vh;
+  }
+  
+  .inner-layout {
+    min-height: 100vh;
+  }
+  
+  .header {
+    position: inherit;
+    top: 0;
+    zIndex: 1;
+    width: 100%;
+    display: flex;
+    alignItems: center;
+    justifyContent: space-between;
+  }
+  
+  .content {
+    padding: 0 50px;
+    margin: 24px 16px;
+    flex-grow: 1;
+  }
+  

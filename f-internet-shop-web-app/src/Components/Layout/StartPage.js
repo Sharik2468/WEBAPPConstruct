@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 import React, {useEffect, useState} from 'react';
-import {Card, Col, Row, Carousel} from 'antd';
+import {Card, Col, Row, Carousel, Image} from 'antd';
 import {useNavigate} from 'react-router-dom';
 
 const {Meta} = Card;
@@ -26,17 +26,8 @@ const Product = () => {
         const data = await response.json();
         console.log('Data:', data);
 
-        const getImagePromises = data.map(async (product) => { // Исправлено здесь
-          console.log('ProductCode:', product.ProductCode);
-          const imageResponse = await fetch(`/api/Product/GetImage/${product.productCode}`);
-          const imageBlob = await imageResponse.blob();
-          const imageUrl = URL.createObjectURL(imageBlob);
-          return {...product, imageUrl};
-        });
-
-        const productsWithImages = await Promise.all(getImagePromises);
-        productsWithImages.reverse();
-        setProducts(productsWithImages);
+        data.reverse();
+        setProducts(data);
       } catch (error) {
         console.log('Error:', error);
       }
@@ -128,18 +119,24 @@ const Product = () => {
           >
             <Card
               hoverable
+              onClick={() => handleCardClick(product.productCode)}
               style={{width: '100%'}}
               cover={
-                <img
-                  alt={product.NameProduct}
-                  src={product.imageUrl}
+                <div
                   style={{
-                    maxWidth: '100%',
-                    maxHeight: '200px',
-                    objectFit: 'cover',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '200px',
+                    overflow: 'hidden',
                   }}
-                  onClick={() => handleCardClick(product.productCode)} // Добавьте обработчик onClick здесь
-                />
+                >
+                  <Image
+                    src={`data:image/jpeg;base64,${product.image}`}
+                    width={200}
+                    height={200}
+                  />
+                </div>
               }
             >
               <Meta

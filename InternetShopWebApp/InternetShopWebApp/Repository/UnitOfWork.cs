@@ -11,6 +11,34 @@ namespace InternetShopWebApp.Repository
         private GenericRepository<ProductTable> _productRepository;
         private GenericRepository<OrderItemTable> _orderItemRepository;
         private GenericRepository<OrderTable> _orderRepository;
+        private GenericRepository<StatusOrderItemTable> _statusOrderItemRepository;
+        private GenericRepository<StatusTable> _statusOrderRepository;
+
+        public GenericRepository<StatusTable> StatusOrderRepository
+        {
+            get
+            {
+
+                if (this._statusOrderRepository == null)
+                {
+                    this._statusOrderRepository = new GenericRepository<StatusTable>(context);
+                }
+                return _statusOrderRepository;
+            }
+        }
+
+        public GenericRepository<StatusOrderItemTable> StatusOrderItemRepository
+        {
+            get
+            {
+
+                if (this._statusOrderItemRepository == null)
+                {
+                    this._statusOrderItemRepository = new GenericRepository<StatusOrderItemTable>(context);
+                }
+                return _statusOrderItemRepository;
+            }
+        }
 
         public GenericRepository<CategoryTable> CategoryRepository
         {

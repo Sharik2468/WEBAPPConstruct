@@ -2,7 +2,7 @@
 /* eslint-disable camelcase */
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable max-len */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 
@@ -15,6 +15,7 @@ import LogOut from './Components/Authorization/LogOut';
 import Product from './Components/Products/Products';
 import StartPage from './Components/Layout/StartPage';
 import ProductPage from './Components/Products/ProductPage';
+import UserContext from './Components/Authorization/UserContext';
 
 const App = () => {
   const [OrderItems, setOrderItems] = useState([]);
@@ -31,63 +32,86 @@ const App = () => {
     setProducts(Products.filter(({ProductCode}) =>
       ProductCode !== removeId));
 
+  const initializeUser = async () => {
+    const requestOptions = {
+      method: 'GET',
+    };
+
+    let data;
+
+    try {
+      const response = await fetch(`/api/account/isauthenticated`, requestOptions);
+      data = await response.json();
+      console.log('Data:', data);
+    } catch (error) {
+      console.log('Error:', error);
+    }
+    setUser(data);
+  };
+
+  useEffect(() => {
+    initializeUser();
+  }, []);
+
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout user={user} />}>
-          <Route index element={
-            <>
-              <StartPage
-                user={user}
-                Products={Products}
-                setProducts={setProducts}
-                removeProduct={removeProduct}
-              />
-            </>
-          } />
-          <Route
-            path="/OrderItems"
-            element={
+      <UserContext.Provider value={{user, setUser}}>
+        <Routes>
+          <Route path="/" element={<Layout user={user} />}>
+            <Route index element={
               <>
-                <OrderItemCreate user={user} addOrderItem={addOrderItem} />
-                <OrderItem
-                  user={user}
-                  OrderItems={OrderItems}
-                  setOrderItems={setOrderItems}
-                  removeOrderItem={removeOrderItem}
-                />
-              </>
-            }
-          />
-          <Route
-            path="/login"
-            element={<LogIn user={user} setUser={setUser} />}
-          />
-          <Route
-            path="/register"
-            element={<Register user={user} setUser={setUser} />}
-          />
-          <Route
-            path="/logout"
-            element={<LogOut user={user} setUser={setUser} />}
-          />
-          <Route
-            path="/products"
-            element={
-              <>
-                <Product
+                <StartPage
                   user={user}
                   Products={Products}
                   setProducts={setProducts}
                   removeProduct={removeProduct}
                 />
               </>
-            }
-          />
-          <Route path="/products/:productCode" element={<ProductPage />} />
-          <Route path="*" element={<h3>404</h3>} />
-        </Route>
-      </Routes>
+            } />
+            <Route
+              path="/OrderItems"
+              element={
+                <>
+                  {/* <OrderItemCreate user={user} addOrderItem={addOrderItem} /> */}
+                  <OrderItem
+                    user={user}
+                    OrderItems={OrderItems}
+                    setOrderItems={setOrderItems}
+                    removeOrderItem={removeOrderItem}
+                  />
+                </>
+              }
+            />
+            <Route
+              path="/login"
+              element={<LogIn user={user} setUser={setUser} />}
+            />
+            <Route
+              path="/register"
+              element={<Register user={user} setUser={setUser} />}
+            />
+            <Route
+              path="/logout"
+              element={<LogOut user={user} setUser={setUser} />}
+            />
+            <Route
+              path="/products"
+              element={
+                <>
+                  <Product
+                    user={user}
+                    Products={Products}
+                    setProducts={setProducts}
+                    removeProduct={removeProduct}
+                  />
+                </>
+              }
+            />
+            <Route path="/products/:productCode" element={<ProductPage user={user} />} />
+            <Route path="*" element={<h3>404</h3>} />
+          </Route>
+        </Routes>
+      </UserContext.Provider>
     </BrowserRouter>
   );
 };
