@@ -1,38 +1,52 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unused-vars */
 /* eslint-disable camelcase */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {Card, List, Descriptions, Image, Button} from 'antd';
+import {Card, List, Descriptions, Image, Button, Col, InputNumber, Row, Slider, Space} from 'antd';
 import './Style.css';
+import UserContext from '../Authorization/UserContext';
+
+const IntegerStep = ({maxValue, onSliderChange}) => {
+  const [inputValue, setInputValue] = useState(1);
+  const onChange = (newValue) => {
+    setInputValue(newValue);
+    onSliderChange(newValue);
+  };
+  return (
+    <Row>
+      <Col span={12}>
+        <Slider
+          min={1}
+          max={maxValue}
+          onChange={onChange}
+          value={typeof inputValue === 'number' ? inputValue : 0}
+        />
+      </Col>
+      <Col span={4}>
+        <InputNumber
+          min={1}
+          max={maxValue}
+          style={{
+            margin: '0 16px',
+          }}
+          value={inputValue}
+          onChange={onChange}
+        />
+      </Col>
+    </Row>
+  );
+};
 
 // eslint-disable-next-line react/prop-types
-const OrderItem = ({user, OrderItems, setOrderItems, removeOrderItem}) => {
-  const [selectedUser, setSelectedUser] = useState(null);
+const OrderItem = ({OrderItems, setOrderItems, removeOrderItem}) => {
+  const {user} = useContext(UserContext);
+  const [sliderValue, setSliderValue] = useState(1);
 
   const navigate = useNavigate(); // используйте useNavigate вместо useHistory
 
   useEffect(() => {
-    const getUserId = async () => {
-      const requestOptions = {
-        method: 'GET',
-      };
-
-      try {
-        const response = await fetch(`/api/account/getid/`, requestOptions);
-        const data = await response.json();
-        console.log('Data:', data);
-        setSelectedUser(data.userCode);
-      } catch (error) {
-        console.log('Error:', error);
-      }
-    };
-
-    getUserId();
-  }, []);
-
-  useEffect(() => {
-    if (selectedUser === null) {
+    if (user === null) {
       return;
     }
 
@@ -42,7 +56,7 @@ const OrderItem = ({user, OrderItems, setOrderItems, removeOrderItem}) => {
       };
 
       try {
-        const response = await fetch(`/api/OrderItem/${selectedUser}`, requestOptions);
+        const response = await fetch(`/api/OrderItem/${user.userID}`, requestOptions);
         const data1 = await response.json();
         console.log('Data:', data1);
         setOrderItems(data1);
@@ -52,24 +66,61 @@ const OrderItem = ({user, OrderItems, setOrderItems, removeOrderItem}) => {
     };
 
     getOrderItems();
-  }, [setOrderItems, selectedUser]);
+  }, [setOrderItems, user]);
 
   // eslint-disable-next-line camelcase
   const deleteOrderItem = async ({order_Item_Code}) => {
     const requestOptions = {
       method: 'DELETE',
     };
+    console.log(`/api/OrderItem/${order_Item_Code}`);
     // eslint-disable-next-line camelcase
-    return await fetch('/api/OrderItem/${order_Item_Code}',
+    return await fetch(`/api/OrderItem/${order_Item_Code}`,
         requestOptions)
-
         .then((response) => {
           if (response.ok) {
             removeOrderItem(order_Item_Code);
+            setOrderItems((prevOrderItems) =>
+              prevOrderItems.filter((item) => item.orderItemCode !== order_Item_Code),
+            );
           }
         },
         (error) => console.log(error),
         );
+  };
+
+  const handleSliderChange = (newValue) => {
+    setSliderValue(newValue);
+  };
+
+  const handleSliderButtonClick = async (orderItemCode) => {
+    console.log(`/api/OrderItem/${orderItemCode}/${sliderValue}`);
+
+    const requestOptions = {
+      method: 'PUT',
+    };
+
+    try {
+      const response = await fetch(`/api/OrderItem/${orderItemCode}/${sliderValue}`, requestOptions);
+      if (response.ok) {
+        // Найти элемент в массиве OrderItems с соответствующим orderItemCode
+        const index = OrderItems.findIndex((item) => item.orderItemCode === orderItemCode);
+
+        if (index !== -1) {
+        // Создать копию массива OrderItems, чтобы не изменять его напрямую
+          const newOrderItems = [...OrderItems];
+
+          // Обновить amountOrderItem и orderSum для элемента с индексом index
+          newOrderItems[index].amountOrderItem = sliderValue;
+          newOrderItems[index].orderSum = sliderValue*OrderItems[index].productCodeNavigation.marketPriceProduct;
+
+          // Обновить состояние OrderItems с новым массивом
+          setOrderItems(newOrderItems);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleButtonClick = (productCode) => {
@@ -79,7 +130,7 @@ const OrderItem = ({user, OrderItems, setOrderItems, removeOrderItem}) => {
   return (
     <React.Fragment>
       <h3>Ваша корзина</h3>
-      {OrderItems && OrderItems.length > 0 ? (
+      {OrderItems && OrderItems.length > 0 && user.userID!=-1 && user.userRole=='user' ? (
         <List
           grid={{
             gutter: 16,
@@ -90,17 +141,6 @@ const OrderItem = ({user, OrderItems, setOrderItems, removeOrderItem}) => {
             <List.Item key={orderItemCode}>
               <Card
                 title={`Количество товара: ${amountOrderItem}`}
-                extra={
-                  user.isAuthenticated && user.userRole !== 'admin' ? (
-                    <button
-                      onClick={() => deleteOrderItem({orderItemCode})}
-                    >
-                      Удалить
-                    </button>
-                  ) : (
-                    ''
-                  )
-                }
               >
                 {productCodeNavigation && (
                   <div
@@ -121,10 +161,26 @@ const OrderItem = ({user, OrderItems, setOrderItems, removeOrderItem}) => {
                         {productCodeNavigation.bestBeforeDateProduct} Лет
                       </Descriptions.Item>
                       <Descriptions.Item label="Цена">
-                        {productCodeNavigation.marketPriceProduct} Рублей
+                        {productCodeNavigation.marketPriceProduct*amountOrderItem} Рублей
                       </Descriptions.Item>
                     </Descriptions>
                     <Button onClick={() => handleButtonClick(productCodeNavigation.productCode)} type="primary">Подробнее</Button>
+                    {user && user.isAuthenticated && user.userRole === 'user' && (
+                      <>
+                        <Button
+                          type="text"
+                          onClick={() => deleteOrderItem({order_Item_Code: orderItemCode})}
+                        >
+                      Удалить товар из корзины
+                        </Button>
+                        <IntegerStep
+                          maxValue={productCodeNavigation.numberInStock}
+                          onSliderChange={handleSliderChange}
+                        />
+                        <Button onClick={() => handleSliderButtonClick(orderItemCode)}>
+                          Изменить количество товара</Button>
+                      </>
+                    )}
                     <hr />
                   </div>
                 )}
@@ -133,7 +189,7 @@ const OrderItem = ({user, OrderItems, setOrderItems, removeOrderItem}) => {
           )}
         />
       ) : (
-        <p>Загрузка данных...</p>
+        <p>Корзина пуста...</p>
       )}
     </React.Fragment>
   );

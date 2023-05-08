@@ -5,6 +5,6 @@ namespace InternetShopWebApp.Models
 {
     public class User:IdentityUser
     {
-
+        public int NormalCode { get; set; }
     }
 }

@@ -101,12 +101,16 @@ namespace InternetShopWebApp.Controllers
 
         // POST: api/Product
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<ProductTable>> NewProduct(ProductTable Product)
         {
+            var allproducts = _unitOfWork.ProductRepository.Get();
+            int maxIndex = allproducts.Max(a => a.ProductCode);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            Product.ProductCode = maxIndex + 1;
             _unitOfWork.ProductRepository.Insert(Product);
             _unitOfWork.Save();
             return CreatedAtAction("GetProduct", new { id = Product.ProductCode }, Product);
@@ -114,6 +118,7 @@ namespace InternetShopWebApp.Controllers
 
         // PUT: api/Product/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> PutProduct(int id, ProductTable Product)
         {
             if (id != Product.ProductCode)
@@ -122,6 +127,34 @@ namespace InternetShopWebApp.Controllers
             }
             //_context.Entry(Product).State = EntityState.Modified;
             _unitOfWork.ProductRepository.Update(Product);
+            try
+            {
+                _unitOfWork.Save();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProductExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return NoContent();
+        }
+
+        // PUT: api/Product/5
+        [HttpPut("{id}/{amount}")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> PutNewAmountProduct(int id, int amount)
+        {
+            //_context.Entry(Product).State = EntityState.Modified;
+            //_unitOfWork.ProductRepository.Update(Product);
+            var product = _unitOfWork.ProductRepository.GetByID(id);
+            product.NumberInStock = amount;
+            _unitOfWork.ProductRepository.Update(product);
             try
             {
                 _unitOfWork.Save();

@@ -28,7 +28,8 @@ namespace InternetShopWebApp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderItemTable>>> GetAllOrderItem()
         {
-            return _unitOfWork.OrderItemRepository.Get().ToList();
+            //return _unitOfWork.OrderItemRepository.Get().ToList();
+            return _unitOfWork.OrderItemRepository.Get(includeProperties: "ProductCodeNavigation,OrderCodeNavigation").ToList();
         }
         // GET: api/OrderItems/5
         [HttpGet("{id}")]
@@ -39,7 +40,7 @@ namespace InternetShopWebApp.Controllers
             var products = _unitOfWork.ProductRepository.Get();
 
             foreach (var item in orderitem)
-                item.ProductCodeNavigation = products.Where(a=>a.ProductCode==item.ProductCode).FirstOrDefault();
+                item.ProductCodeNavigation = products.Where(a => a.ProductCode == item.ProductCode).FirstOrDefault();
 
             if (orderitem == null)
             {
@@ -50,6 +51,7 @@ namespace InternetShopWebApp.Controllers
 
         // POST: api/OrderItem/1.0(Код клиента.Код товара)
         [HttpPost("{Request}")]
+        [Authorize(Roles = "user")]
         public async Task<ActionResult<OrderItemTable>> NewOrderItem(string Request)
         {
             string[] words = Request.Split(new char[] { '.' });
@@ -66,8 +68,8 @@ namespace InternetShopWebApp.Controllers
             //_unitOfWork.OrderItemRepository.Insert(OrderItem);
             //_unitOfWork.Save();
 
-            bool success = _orderService.AddNewOrderItem(first, second);
-            return CreatedAtAction("GetOrderItem added?", success);
+            var result = _orderService.AddNewOrderItem(first, second);
+            return CreatedAtAction("GetOrderItem", new { id = result.OrderItemCode }, result);
         }
 
         // PUT: api/OrderItem/5
@@ -97,6 +99,37 @@ namespace InternetShopWebApp.Controllers
             return NoContent();
         }
 
+        // PUT: api/OrderItem/updateamount/5/3
+        [HttpPut("{id}/{amount}")]
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> PutOrderItemUpdateAmount(int id, int amount)
+        {
+            bool result = _orderService.SetNewOrderItemAmount(id, amount);
+
+            if (result == false)
+            {
+                DeleteOrderItem(id);
+            }
+
+            //_unitOfWork.OrderItemRepository.Update();
+            //try
+            //{
+            //    _unitOfWork.Save();
+            //}
+            //catch (DbUpdateConcurrencyException)
+            //{
+            //    if (!OrderItemExists(id))
+            //    {
+            //        return NotFound();
+            //    }
+            //    else
+            //    {
+            //        throw;
+            //    }
+            //}
+            return NoContent();
+        }
+
         private bool OrderItemExists(int id)
         {
             return _unitOfWork.OrderItemRepository.Get().Any(e => e.OrderItemCode == id);
@@ -104,9 +137,10 @@ namespace InternetShopWebApp.Controllers
 
         // DELETE: api/OrderItem/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> DeleteOrderItem(int id)
         {
+            var order = _orderService.GetOrderByOrderItemID(id);
             var orderitem = _unitOfWork.OrderItemRepository.GetByID(id);
             if (orderitem == null)
             {
@@ -114,6 +148,14 @@ namespace InternetShopWebApp.Controllers
             }
             _unitOfWork.OrderItemRepository.Delete(orderitem);
             _unitOfWork.Save();
+
+            if (order.OrderItemTables.Count() - 1 == 0)
+            {
+                order.OrderItemTables.Clear();
+                _unitOfWork.OrderRepository.Delete(order);
+                _unitOfWork.Save();
+            }
+
             return NoContent();
         }
     }

@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import {Card, Col, Row, Input, Dropdown, Image, Menu, Button} from 'antd';
 import {useNavigate} from 'react-router-dom';
 import {DownOutlined} from '@ant-design/icons';
+import UserContext from '../Authorization/UserContext';
 
 const {Search} = Input;
 const {Meta} = Card;
@@ -86,8 +87,16 @@ const items = [
 const Product = () => {
   const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const {user} = useContext(UserContext);
 
   const navigate = useNavigate(); // используйте useNavigate вместо useHistory
+
+  const isUserAdmin = user.userRole === 'admin';
+
+  // Фильтруйте продукты, если пользователь не админ и numberInStock больше 0
+  const filteredProducts = isUserAdmin ?
+    products :
+    products.filter((product) => product.numberInStock > 0);
 
   const handleCardClick = (productCode) => {
     navigate(`/products/${productCode}`);
@@ -193,7 +202,7 @@ const Product = () => {
         </Dropdown>
       </Row>
       <Row gutter={[16, 16]}>
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <Col
             key={product.ProductCode} // Добавьте ключ здесь
             xs={{

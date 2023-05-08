@@ -29,7 +29,7 @@ setUser({isAuthenticated: true, userName: ''});
                 typeof data !== 'undefined' &&
 typeof data.userName !== 'undefined'
               ) {
-                setUser({isAuthenticated: true, userName: data.userName, userRole: data.userRole});
+                setUser({isAuthenticated: true, userName: data.userName, userRole: data.userRole, userID: data.userID});
                 navigate('/');
               }
               typeof data !== 'undefined' &&

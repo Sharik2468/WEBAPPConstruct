@@ -2,8 +2,10 @@
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Button, Checkbox, Form, Input} from 'antd';
+
 const LogIn = ({user, setUser}) => {
   const [errorMessages, setErrorMessages] = useState([]);
+
   const navigate = useNavigate();
   const logIn = async (formValues) => {
     console.log('Success:', formValues);
@@ -30,7 +32,7 @@ setUser({isAuthenticated: true, userName: ''});
                 typeof data !== 'undefined' &&
 typeof data.userName !== 'undefined'
               ) {
-                setUser({isAuthenticated: true, userName: data.userName, userRole: data.userRole});
+                setUser({isAuthenticated: true, userName: data.userName, userRole: data.userRole, userID: data.userID});
                 navigate('/');
               }
               typeof data !== 'undefined' &&

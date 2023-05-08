@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace InternetShopWebApp.Models;
 
@@ -23,6 +24,7 @@ public partial class ProductTable
 
     public string? Description { get; set; }
 
+    [JsonConverter(typeof(Base64ToByteArrayConverter))]
     public byte[]? Image { get; set; }
 
     public int? NumberInStock { get; set; }

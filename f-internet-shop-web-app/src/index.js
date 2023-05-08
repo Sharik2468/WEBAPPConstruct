@@ -15,6 +15,7 @@ import LogOut from './Components/Authorization/LogOut';
 import Product from './Components/Products/Products';
 import StartPage from './Components/Layout/StartPage';
 import ProductPage from './Components/Products/ProductPage';
+import AddProductForm from './Components/Products/AddProduct';
 import UserContext from './Components/Authorization/UserContext';
 
 const App = () => {
@@ -85,6 +86,10 @@ const App = () => {
             <Route
               path="/login"
               element={<LogIn user={user} setUser={setUser} />}
+            />
+            <Route
+              path="/addproduct"
+              element={<AddProductForm />}
             />
             <Route
               path="/register"

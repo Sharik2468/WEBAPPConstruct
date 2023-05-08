@@ -24,7 +24,8 @@ namespace InternetShopWebApp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderTable>>> GetAllOrder()
         {
-            return _unitOfWork.OrderRepository.Get().ToList();
+            //return _unitOfWork.OrderRepository.Get().ToList();
+            return _unitOfWork.OrderRepository.Get(includeProperties: "OrderItemTables").ToList();
         }
         // GET: api/Orders/5
         [HttpGet("{id}")]
@@ -86,7 +87,7 @@ namespace InternetShopWebApp.Controllers
 
         // DELETE: api/Order/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             //var blog = await _context.OrderTables.FindAsync(id);
@@ -97,6 +98,7 @@ namespace InternetShopWebApp.Controllers
             }
             _unitOfWork.OrderRepository.Delete(Order);
             _unitOfWork.Save();
+
             return NoContent();
         }
     }
