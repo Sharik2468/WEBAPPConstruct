@@ -17,6 +17,7 @@ import StartPage from './Components/Layout/StartPage';
 import ProductPage from './Components/Products/ProductPage';
 import AddProductForm from './Components/Products/AddProduct';
 import UserContext from './Components/Authorization/UserContext';
+import ManagmentOrder from './Components/Admin/AdminOrderManagment';
 
 const App = () => {
   const [OrderItems, setOrderItems] = useState([]);
@@ -90,6 +91,10 @@ const App = () => {
             <Route
               path="/addproduct"
               element={<AddProductForm />}
+            />
+            <Route
+              path="/ordermanagment"
+              element={<ManagmentOrder />}
             />
             <Route
               path="/register"

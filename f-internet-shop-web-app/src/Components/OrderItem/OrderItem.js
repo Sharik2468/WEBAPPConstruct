@@ -3,9 +3,12 @@
 /* eslint-disable camelcase */
 import React, {useEffect, useState, useContext} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {Card, List, Descriptions, Image, Button, Col, InputNumber, Row, Slider, Space} from 'antd';
+import {Card, List, Descriptions, Button, Col, InputNumber, Row, Slider, Statistic} from 'antd';
 import './Style.css';
 import UserContext from '../Authorization/UserContext';
+import CountUp from 'react-countup';
+
+const formatter = (value) => <CountUp end={value} separator="," />;
 
 const IntegerStep = ({maxValue, onSliderChange}) => {
   const [inputValue, setInputValue] = useState(1);
@@ -42,8 +45,33 @@ const IntegerStep = ({maxValue, onSliderChange}) => {
 const OrderItem = ({OrderItems, setOrderItems, removeOrderItem}) => {
   const {user} = useContext(UserContext);
   const [sliderValue, setSliderValue] = useState(1);
+  const [statusOrderItem, setStatusOrderItem] = useState(1);
 
   const navigate = useNavigate(); // используйте useNavigate вместо useHistory
+
+  useEffect(() => {
+    if (user === null) {
+      return;
+    }
+
+    const getStatusOrderItems = async () => {
+      const requestOptions = {
+        method: 'GET',
+      };
+
+      try {
+        const response = await fetch(`/api/OrderItem/GetAllOrderItemStatuses`, requestOptions);
+        const data = await response.json();
+        console.log('Data:', data);
+        setStatusOrderItem(data);
+      } catch (error) {
+        console.log('Error:', error);
+      }
+    };
+
+    getStatusOrderItems();
+  }, [user]); // добавьте user в список зависимостей
+
 
   useEffect(() => {
     if (user === null) {
@@ -123,71 +151,162 @@ const OrderItem = ({OrderItems, setOrderItems, removeOrderItem}) => {
     }
   };
 
+  const handleStatusChangeButtonClick = async (orderCode) => {
+    console.log(`/api/Order/PutNewStatusID/${orderCode}/${2}`);
+
+    const requestOptions = {
+      method: 'PUT',
+    };
+
+    try {
+      const response = await fetch(`/api/Order/PutNewStatusID/${orderCode}/${2}`, requestOptions);
+      if (response.ok) {
+        // Откройте оповещение
+        notification.success({
+          message: 'Теперь вы можете оплатить заказ',
+          description: `Ваш номер заказа: ${orderCode}. Предоставьте его у кассы, чтобы оплатить заказ.`,
+        });
+
+        // Создать новый массив, содержащий только элементы с statusOrderItemTableId, отличным от '1'
+        const newOrderItems = OrderItems.filter((item) => String(item.statusOrderItemTableId) !== '1');
+
+        // Обновить состояние OrderItems с новым массивом
+        setOrderItems(newOrderItems);
+      }
+    } catch (error) {
+      console.log(error);
+      notification.error({
+        message: 'Ошибка',
+        description: `Не удалось оформить заказ: ${error.message}`,
+      });
+    }
+  };
+
+
+  const handleStatusOrderItemChangeButtonClick = async (orderItemCode, newStatus) => {
+    console.log(`/api/OrderItem/PutNewStatusID/${orderItemCode}/${newStatus}`);
+
+    const requestOptions = {
+      method: 'PUT',
+    };
+
+    try {
+      const response = await fetch(`/api/OrderItem/PutNewStatusID/${orderItemCode}/${newStatus}`, requestOptions);
+      if (response.ok) {
+        // Найти элемент в массиве OrderItems с соответствующим orderItemCode
+        const index = OrderItems.findIndex((item) => item.orderItemCode === orderItemCode);
+
+        if (index !== -1) {
+          // Создать копию массива OrderItems, чтобы не изменять его напрямую
+          const newOrderItems = [...OrderItems];
+
+          // Обновить statusOrderItemTableId для элемента с индексом index
+          newOrderItems[index].statusOrderItemTableId = newStatus;
+
+          // Обновить состояние OrderItems с новым массивом
+          setOrderItems(newOrderItems);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
   const handleButtonClick = (productCode) => {
     navigate(`/products/${productCode}`);
+  };
+
+  const getTotalCost = () => {
+    return OrderItems.reduce((total, item) => {
+      if (String(item.statusOrderItemTableId) === '1') {
+        return total + item.orderSum;
+      } else {
+        return total;
+      }
+    }, 0);
   };
 
   return (
     <React.Fragment>
       <h3>Ваша корзина</h3>
       {OrderItems && OrderItems.length > 0 && user.userID!=-1 && user.userRole=='user' ? (
-        <List
-          grid={{
-            gutter: 16,
-            column: 1,
-          }}
-          dataSource={OrderItems}
-          renderItem={({orderItemCode, amountOrderItem, productCodeNavigation}) => (
-            <List.Item key={orderItemCode}>
-              <Card
-                title={`Количество товара: ${amountOrderItem}`}
-              >
-                {productCodeNavigation && (
-                  <div
-                    className="OrderItemText"
-                    key={productCodeNavigation.productCode}
-                    id={productCodeNavigation.productCode}
+        <>
+          <Row gutter={16}>
+            <List
+              grid={{
+                gutter: 16,
+                column: 1,
+              }}
+              dataSource={OrderItems}
+              renderItem={({orderItemCode, amountOrderItem, productCodeNavigation, statusOrderItemTableId}) => (
+                <List.Item key={orderItemCode}>
+                  <Card
+                    title={`Количество товара: ${amountOrderItem}, Статус товара: ${statusOrderItem && statusOrderItem[statusOrderItemTableId - 1] ? statusOrderItem[statusOrderItemTableId - 1].statusOrderItemTable1 : 'неизвестно'}`}
                   >
-                    {/* <Image src={`data:image/jpeg;base64,${productCodeNavigation.image}`} width={200} /> */}
-                    <Descriptions title={productCodeNavigation.nameProduct} size="small">
-                      <Descriptions.Item label="Описание">
-                        {
+                    {productCodeNavigation && (
+                      <div
+                        className="OrderItemText"
+                        key={productCodeNavigation.productCode}
+                        id={productCodeNavigation.productCode}
+                      >
+                        {/* <Image src={`data:image/jpeg;base64,${productCodeNavigation.image}`} width={200} /> */}
+                        <Descriptions title={productCodeNavigation.nameProduct} size="small">
+                          <Descriptions.Item label="Описание">
+                            {
                 productCodeNavigation.description.length > 20 ?
                 productCodeNavigation.description.substring(0, 20) + '...' :
                 productCodeNavigation.description
-                        }
-                      </Descriptions.Item>
-                      <Descriptions.Item label="Гарантия">
-                        {productCodeNavigation.bestBeforeDateProduct} Лет
-                      </Descriptions.Item>
-                      <Descriptions.Item label="Цена">
-                        {productCodeNavigation.marketPriceProduct*amountOrderItem} Рублей
-                      </Descriptions.Item>
-                    </Descriptions>
-                    <Button onClick={() => handleButtonClick(productCodeNavigation.productCode)} type="primary">Подробнее</Button>
-                    {user && user.isAuthenticated && user.userRole === 'user' && (
-                      <>
-                        <Button
-                          type="text"
-                          onClick={() => deleteOrderItem({order_Item_Code: orderItemCode})}
-                        >
+                            }
+                          </Descriptions.Item>
+                          <Descriptions.Item label="Гарантия">
+                            {productCodeNavigation.bestBeforeDateProduct} Лет
+                          </Descriptions.Item>
+                          <Descriptions.Item label="Цена">
+                            {productCodeNavigation.marketPriceProduct*amountOrderItem} Рублей
+                          </Descriptions.Item>
+                        </Descriptions>
+                        <Button onClick={() => handleButtonClick(productCodeNavigation.productCode)} type="primary">Подробнее</Button>
+                        {user && user.isAuthenticated && user.userRole === 'user' && (
+                          <>
+                            <Button
+                              type="text"
+                              onClick={() => deleteOrderItem({order_Item_Code: orderItemCode})}
+                            >
                       Удалить товар из корзины
-                        </Button>
-                        <IntegerStep
-                          maxValue={productCodeNavigation.numberInStock}
-                          onSliderChange={handleSliderChange}
-                        />
-                        <Button onClick={() => handleSliderButtonClick(orderItemCode)}>
+                            </Button>
+                            <IntegerStep
+                              maxValue={productCodeNavigation.numberInStock}
+                              onSliderChange={handleSliderChange}
+                            />
+                            <Button onClick={() => handleSliderButtonClick(orderItemCode)}>
                           Изменить количество товара</Button>
-                      </>
+                            <Button onClick={() => handleStatusOrderItemChangeButtonClick(orderItemCode, statusOrderItemTableId==1?2:1)}>
+                          Изменить состояние товара</Button>
+                          </>
+                        )}
+                        <hr />
+                      </div>
                     )}
-                    <hr />
-                  </div>
-                )}
-              </Card>
-            </List.Item>
-          )}
-        />
+                  </Card>
+                </List.Item>
+              )}
+            />
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Statistic
+                title="Общая стоимость заказов"
+                value={getTotalCost()}
+                formatter={formatter}
+              />
+            </Col>
+            <Col span={12}>
+              <Button type="primary" onClick={() => handleStatusChangeButtonClick(OrderItems[0].orderCode)}>
+                          Оформить заказ</Button>
+            </Col>
+          </Row>
+        </>
       ) : (
         <p>Корзина пуста...</p>
       )}

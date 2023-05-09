@@ -13,6 +13,7 @@ import {
   ShoppingCartOutlined,
   FileAddOutlined,
   UserOutlined,
+  ProfileOutlined,
 } from '@ant-design/icons';
 import './LayoutStyle.css';
 import UserContext from '../Authorization/UserContext';
@@ -77,9 +78,14 @@ const Layout = () => {
             </Menu.Item>
           </SubMenu>
           {user.userRole == 'admin' ? (
-          <Menu.Item key="7" icon={<FileAddOutlined />}>
-            <Link to="/addproduct">Добавить продукт</Link>
-          </Menu.Item>
+            <>
+              <Menu.Item key="7" icon={<FileAddOutlined />}>
+                <Link to="/addproduct">Добавить продукт</Link>
+              </Menu.Item>
+              <Menu.Item key="8" icon={<ProfileOutlined />}>
+                <Link to="/ordermanagment">Управление заказами</Link>
+              </Menu.Item>
+            </>
           ) : (<p></p>
           )}
         </Menu>

@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable max-len */
 import React, {useEffect, useState, useContext} from 'react';
-import {Card, Col, Row, Input, Dropdown, Image, Menu, Button} from 'antd';
+import {Card, Col, Row, Input, Dropdown, Image, Menu, Button, Pagination} from 'antd';
 import {useNavigate} from 'react-router-dom';
-import {DownOutlined} from '@ant-design/icons';
+import {DownOutlined, LoadingOutlined} from '@ant-design/icons';
 import UserContext from '../Authorization/UserContext';
 
 const {Search} = Input;
@@ -87,10 +87,13 @@ const items = [
 const Product = () => {
   const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const {user} = useContext(UserContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
 
+  const {user} = useContext(UserContext);
   const navigate = useNavigate(); // используйте useNavigate вместо useHistory
 
+  const itemsPerPage = 8; // Количество товаров на странице
   const isUserAdmin = user.userRole === 'admin';
 
   // Фильтруйте продукты, если пользователь не админ и numberInStock больше 0
@@ -107,8 +110,14 @@ const Product = () => {
     console.log('Выбранная категория:', event.item.props.label);
   };
 
+  const onChange = (page) => {
+    console.log(page);
+    setCurrentPage(page);
+  };
+
   useEffect(() => {
     const getProducts = async () => {
+      setLoading(true);
       const requestOptions = {
         method: 'GET',
       };
@@ -121,6 +130,8 @@ const Product = () => {
         setProducts(data);
       } catch (error) {
         console.log('Error:', error);
+      } finally {
+        setLoading(false); // Сбрасываем состояние загрузки после завершения загрузки
       }
     };
 
@@ -183,78 +194,109 @@ const Product = () => {
     </Menu>
   );
 
+  // Функция для выбора товаров, которые нужно отобразить на текущей странице
+  const getProductsToDisplay = (allProducts) => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return allProducts.slice(startIndex, endIndex);
+  };
+
+  // Выбираем товары для отображения на текущей странице
+  const productsToDisplay = getProductsToDisplay(filteredProducts);
+
   return (
     <>
       <Row gutter={[16, 48]}>
-        <Search
-          placeholder="Введите поисковый запрос"
-          allowClear
-          enterButton="Search"
-          size="large"
-          onSearch={onSearch}
-        />
+        <Col>
+          <Search
+            placeholder="Введите поисковый запрос"
+            allowClear
+            enterButton="Search"
+            size="large"
+            onSearch={onSearch}
+          />
+          <p></p>
+        </Col>
       </Row>
       <Row gutter={[16, 48]}>
-        <Dropdown overlay={menu}>
-          <Button>
+        <Col>
+          <Dropdown overlay={menu}>
+            <Button>
             Категории <DownOutlined />
-          </Button>
-        </Dropdown>
+            </Button>
+          </Dropdown>
+          <p></p>
+        </Col>
       </Row>
       <Row gutter={[16, 16]}>
-        {filteredProducts.map((product) => (
-          <Col
-            key={product.ProductCode} // Добавьте ключ здесь
-            xs={{
-              span: 24,
-              offset: 0,
-            }}
-            sm={{
-              span: 12,
-              offset: 0,
-            }}
-            md={{
-              span: 8,
-              offset: 0,
-            }}
-            lg={{
-              span: 6,
-              offset: 0,
-            }}
-          >
-            <Card
-              hoverable
-              onClick={() => handleCardClick(product.productCode)}
-              style={{width: '100%'}}
-              cover={
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '200px',
-                    overflow: 'hidden',
-                  }}
-                >
-                  <Image
-                    src={`data:image/jpeg;base64,${product.image}`}
-                    width={200}
-                    height={200}
-                  />
-                </div>
-              }
+        {loading ? (
+    <div style={{display: 'flex', justifyContent: 'center', width: '100%'}}>
+      <LoadingOutlined style={{fontSize: 24}} />
+    </div>
+  ) : (
+    productsToDisplay.map((product) => (
+      <Col
+        key={product.ProductCode} // Добавьте ключ здесь
+        xs={{
+          span: 24,
+          offset: 0,
+        }}
+        sm={{
+          span: 12,
+          offset: 0,
+        }}
+        md={{
+          span: 8,
+          offset: 0,
+        }}
+        lg={{
+          span: 6,
+          offset: 0,
+        }}
+      >
+        <Card
+          hoverable
+          onClick={() => handleCardClick(product.productCode)}
+          style={{width: '100%'}}
+          cover={
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '200px',
+                overflow: 'hidden',
+              }}
             >
-              <Meta
-                title={product.nameProduct}
-                description={
+              <Image
+                src={`data:image/jpeg;base64,${product.image}`}
+                width={200}
+                height={200}
+              />
+            </div>
+          }
+        >
+          <Meta
+            title={product.nameProduct}
+            description={
                 product.description.length > 20 ?
                   product.description.substring(0, 20) + '...' :
                   product.description
-                }
-              />
-            </Card>
-          </Col>
-        ))}
+            }
+          />
+        </Card>
+      </Col>
+    ))
+        )}
+        <p></p>
+      </Row>
+      <Row gutter={[16, 16]} justify="center">
+        <Pagination
+          current={currentPage}
+          onChange={onChange}
+          pageSize={itemsPerPage}
+          total={filteredProducts.length}
+        />
       </Row>
     </>
   );

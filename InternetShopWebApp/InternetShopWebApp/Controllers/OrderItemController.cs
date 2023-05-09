@@ -31,6 +31,31 @@ namespace InternetShopWebApp.Controllers
             //return _unitOfWork.OrderItemRepository.Get().ToList();
             return _unitOfWork.OrderItemRepository.Get(includeProperties: "ProductCodeNavigation,OrderCodeNavigation").ToList();
         }
+
+        // GET: api/Status
+        [HttpGet("GetAllOrderItemStatuses")]
+        public async Task<ActionResult<IEnumerable<StatusOrderItemTable>>> GetAllOrderItemStatuses()
+        {
+            //return _unitOfWork.OrderRepository.Get().ToList();
+            return _unitOfWork.StatusOrderItemRepository.Get().ToList();
+        }
+
+        // GET: api/Status
+        [HttpGet("GetAllInStockOrderItem")]
+        public async Task<ActionResult<IEnumerable<OrderItemTable>>> GetAllInStockOrderItem()
+        {
+            //return _unitOfWork.OrderRepository.Get().ToList();
+            return _unitOfWork.OrderItemRepository.Get(includeProperties: "ProductCodeNavigation,OrderCodeNavigation").Where(a=>a.StatusOrderItemTableId==1).ToList();
+        }
+
+        // GET: api/Status
+        [HttpGet("GetAllCanceledOrderItem")]
+        public async Task<ActionResult<IEnumerable<OrderItemTable>>> GetAllCanceledOrderItem()
+        {
+            //return _unitOfWork.OrderRepository.Get().ToList();
+            return _unitOfWork.OrderItemRepository.Get(includeProperties: "ProductCodeNavigation,OrderCodeNavigation").Where(a => a.StatusOrderItemTableId == 2).ToList();
+        }
+
         // GET: api/OrderItems/5
         [HttpGet("{id}")]
         public async Task<ActionResult<IEnumerable<OrderItemTable>>> GetOrderItem(int id)
@@ -72,6 +97,18 @@ namespace InternetShopWebApp.Controllers
             return CreatedAtAction("GetOrderItem", new { id = result.OrderItemCode }, result);
         }
 
+        // GET: api/Orders/5
+        [HttpGet("GetOrderItemStatus/{id}")]
+        public async Task<ActionResult<StatusOrderItemTable>> GetOrderItesStatusByID(int id)
+        {
+            var status = _unitOfWork.StatusOrderItemRepository.GetByID(id);
+            if (status == null)
+            {
+                return NotFound();
+            }
+            return status;
+        }
+
         // PUT: api/OrderItem/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOrderItem(int id, OrderItemTable OrderItem)
@@ -80,6 +117,31 @@ namespace InternetShopWebApp.Controllers
             {
                 return BadRequest();
             }
+            _unitOfWork.OrderItemRepository.Update(OrderItem);
+            try
+            {
+                _unitOfWork.Save();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!OrderItemExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return NoContent();
+        }
+
+        // PUT: api/OrderItem/5
+        [HttpPut("PutNewStatusID/{id}/{status}")]
+        public async Task<IActionResult> PutStatusIDOrderItem(int id, int status)
+        {
+            var OrderItem = _unitOfWork.OrderItemRepository.GetByID(id);
+            OrderItem.StatusOrderItemTableId = status;
             _unitOfWork.OrderItemRepository.Update(OrderItem);
             try
             {
