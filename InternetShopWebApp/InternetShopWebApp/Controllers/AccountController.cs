@@ -20,6 +20,13 @@ namespace ASPNetCoreApp.Controllers
             _signInManager = signInManager;
         }
 
+        [HttpGet]
+        [Route("api/account/getusers")]
+        public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
+        {
+            return ListUsers();
+        }
+
         [HttpPost]
         [Route("api/account/register")]
         [AllowAnonymous]

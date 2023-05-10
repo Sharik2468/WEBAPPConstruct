@@ -14,6 +14,7 @@ import {
   FileAddOutlined,
   UserOutlined,
   ProfileOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 import './LayoutStyle.css';
 import UserContext from '../Authorization/UserContext';
@@ -63,9 +64,31 @@ const Layout = () => {
           <Menu.Item key="2" icon={<ShopOutlined />}>
             <Link to="/products">Товары</Link>
           </Menu.Item>
-          <Menu.Item key="3" icon={<ShoppingCartOutlined />}>
-            <Link to="/OrderItems">Корзина</Link>
-          </Menu.Item>
+          {user.userRole == 'admin' ? (
+            <SubMenu key="sub2" icon={<EditOutlined />} title="Управление магазином">
+              <Menu.Item key="7" icon={<FileAddOutlined />}>
+                <Link to="/addproduct">Добавить продукт</Link>
+              </Menu.Item>
+              <Menu.Item key="8" icon={<ProfileOutlined />}>
+                <Link to="/ordermanagment">Управление заказами</Link>
+              </Menu.Item>
+            </SubMenu>
+          ) : (<></>
+          )}
+          {user.userRole == 'user' ? (
+            <SubMenu key="sub3" icon={<EditOutlined />} title="Управление заказами">
+              <Menu.Item key="3" icon={<ShoppingCartOutlined />}>
+                <Link to="/OrderItems">Корзина</Link>
+              </Menu.Item>
+              <Menu.Item key="8" icon={<FileAddOutlined />}>
+                <Link to="/userorderhistory">История покупок</Link>
+              </Menu.Item>
+              <Menu.Item key="9" icon={<ProfileOutlined />}>
+                <Link to="/userordermanagment">Неоплаченные заказы</Link>
+              </Menu.Item>
+            </SubMenu>
+          ) : (<></>
+          )}
           <SubMenu key="sub1" icon={<UserOutlined />} title="Профиль">
             <Menu.Item key="4" icon={<LoginOutlined />}>
               <Link to="/login">Войти</Link>
@@ -77,17 +100,6 @@ const Layout = () => {
               <Link to="/logout">Выход</Link>
             </Menu.Item>
           </SubMenu>
-          {user.userRole == 'admin' ? (
-            <>
-              <Menu.Item key="7" icon={<FileAddOutlined />}>
-                <Link to="/addproduct">Добавить продукт</Link>
-              </Menu.Item>
-              <Menu.Item key="8" icon={<ProfileOutlined />}>
-                <Link to="/ordermanagment">Управление заказами</Link>
-              </Menu.Item>
-            </>
-          ) : (<p></p>
-          )}
         </Menu>
       </Sider>
       <LayoutAntd className="inner-layout">

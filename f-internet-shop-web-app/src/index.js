@@ -18,6 +18,8 @@ import ProductPage from './Components/Products/ProductPage';
 import AddProductForm from './Components/Products/AddProduct';
 import UserContext from './Components/Authorization/UserContext';
 import ManagmentOrder from './Components/Admin/AdminOrderManagment';
+import UserManagmentOrder from './Components/User/GetAllPreparedOrderUser';
+import UserHistoryOrder from './Components/User/UserHistory';
 
 const App = () => {
   const [OrderItems, setOrderItems] = useState([]);
@@ -95,6 +97,14 @@ const App = () => {
             <Route
               path="/ordermanagment"
               element={<ManagmentOrder />}
+            />
+            <Route
+              path="/userordermanagment"
+              element={<UserManagmentOrder />}
+            />
+            <Route
+              path="/userorderhistory"
+              element={<UserHistoryOrder />}
             />
             <Route
               path="/register"

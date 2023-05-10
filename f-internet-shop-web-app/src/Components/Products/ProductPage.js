@@ -187,7 +187,12 @@ const ProductPage = () => {
             {product.numberInStock}
           </Descriptions.Item>
         </Descriptions>
-        <Button type="primary" onClick={addToCart}>Добавить в корзину</Button>
+
+        {user.userRole == 'user' ? (
+            <Button type="primary" onClick={addToCart}>Добавить в корзину</Button>
+          ) : (<></>
+          )}
+
         {user.userID!=-1 && user.userRole=='admin' ? (
           <>
             <IntegerStep onChange={setQuantity} /> {/* Добавьте компонент IntegerStep */}

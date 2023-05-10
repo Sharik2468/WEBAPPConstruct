@@ -3,7 +3,7 @@
 /* eslint-disable camelcase */
 import React, {useEffect, useState, useContext} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {Card, List, Descriptions, Button, Col, InputNumber, Row, Slider, Statistic} from 'antd';
+import {Card, List, Descriptions, Button, Col, InputNumber, Row, Slider, Statistic, notification} from 'antd';
 import './Style.css';
 import UserContext from '../Authorization/UserContext';
 import CountUp from 'react-countup';
@@ -152,14 +152,14 @@ const OrderItem = ({OrderItems, setOrderItems, removeOrderItem}) => {
   };
 
   const handleStatusChangeButtonClick = async (orderCode) => {
-    console.log(`/api/Order/PutNewStatusID/${orderCode}/${2}`);
+    console.log(`/api/Order/PrepareOrder/${orderCode}`);
 
     const requestOptions = {
       method: 'PUT',
     };
 
     try {
-      const response = await fetch(`/api/Order/PutNewStatusID/${orderCode}/${2}`, requestOptions);
+      const response = await fetch(`/api/Order/PrepareOrder/${orderCode}`, requestOptions);
       if (response.ok) {
         // Откройте оповещение
         notification.success({
