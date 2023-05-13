@@ -3,9 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using InternetShopWebApp.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
-using System.Data;
 using InternetShopWebApp.Repository;
-using Microsoft.EntityFrameworkCore.Infrastructure.Internal;
+using InternetShopWebApp.Services;
 
 namespace InternetShopWebApp.Controllers
 {
@@ -14,34 +13,33 @@ namespace InternetShopWebApp.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly UnitOfWork _unitOfWork;
+        private readonly OrderServices _orderService;
 
-        public OrderController(UnitOfWork newUnitOfWork)
+        public OrderController(OrderServices newOrderService)
         {
-            _unitOfWork = newUnitOfWork;
+            _orderService = newOrderService;
         }
 
         // GET: api/Orders
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderTable>>> GetAllOrder()
         {
-            //return _unitOfWork.OrderRepository.Get().ToList();
-            return _unitOfWork.OrderRepository.Get(includeProperties: "OrderItemTables").ToList();
+            return _orderService.GetAllOrderService();
         }
 
         // GET: api/Status
         [HttpGet("GetAllStatuses")]
         public async Task<ActionResult<IEnumerable<StatusTable>>> GetAllStatus()
         {
-            //return _unitOfWork.OrderRepository.Get().ToList();
-            return _unitOfWork.StatusOrderRepository.Get().ToList();
+            return _orderService.GetAllStatusServices();
         }
+
 
         // GET: api/Orders/5
         [HttpGet("GetStatus/{id}")]
         public async Task<ActionResult<StatusTable>> GetStatusByID(int id)
         {
-            var status = _unitOfWork.StatusOrderRepository.GetByID(id);
+            StatusTable status = _orderService.GetStatusByIDService(id);
             if (status == null)
             {
                 return NotFound();
@@ -49,65 +47,62 @@ namespace InternetShopWebApp.Controllers
             return status;
         }
 
+
+
         // GET: api/Status
         [HttpGet("GetAllTreatmentOrder")]
         public async Task<ActionResult<IEnumerable<OrderTable>>> GetAllTreatmentOrder()
         {
-            //return _unitOfWork.OrderRepository.Get().ToList();
-            return _unitOfWork.OrderRepository.Get(includeProperties: "OrderItemTables").Where(a => a.StatusCode == 1).ToList();
+            return _orderService.GetAllTreatmentOrderService();
         }
+
 
         // GET: api/Status
         [HttpGet("GetAllPreparedOrder")]
         [Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<OrderTable>>> GetAllPreparedOrder()
         {
-            //return _unitOfWork.OrderRepository.Get().ToList();
-            return _unitOfWork.OrderRepository.Get(includeProperties: "OrderItemTables").Where(a => a.StatusCode == 2).ToList();
+            return _orderService.GetAllPreparedOrderService();
         }
+
 
         // GET: api/Status
         [HttpGet("GetAllPreparedUserOrder/{clientid}")]
         [Authorize(Roles = "user")]
         public async Task<ActionResult<IEnumerable<OrderTable>>> GetAllPreparedUserOrder(int clientid)
         {
-            //return _unitOfWork.OrderRepository.Get().ToList();
-            return _unitOfWork.OrderRepository.Get(includeProperties: "OrderItemTables")
-                .Where(a => a.StatusCode == 2 && a.ClientCode == clientid).ToList();
+            return _orderService.GetAllPreparedUserOrderService(clientid);
         }
+
 
         // GET: api/Status
         [HttpGet("GetAllUserOrder/{clientid}")]
         [Authorize(Roles = "user")]
         public async Task<ActionResult<IEnumerable<OrderTable>>> GetAllUserOrder(int clientid)
         {
-            //return _unitOfWork.OrderRepository.Get().ToList();
-            return _unitOfWork.OrderRepository.Get(includeProperties: "OrderItemTables")
-                .Where(a => a.ClientCode == clientid
-                && (a.StatusCode == 3 || a.StatusCode == 4)).ToList();
+            return _orderService.GetAllUserOrderService(clientid);
         }
 
         // GET: api/Status
         [HttpGet("GetAllPaidOrder")]
         public async Task<ActionResult<IEnumerable<OrderTable>>> GetAllPaidOrder()
         {
-            //return _unitOfWork.OrderRepository.Get().ToList();
-            return _unitOfWork.OrderRepository.Get(includeProperties: "OrderItemTables").Where(a => a.StatusCode == 3).ToList();
+            return _orderService.GetAllPaidOrderService();
         }
+
 
         // GET: api/Status
         [HttpGet("GetAllCanceledOrder")]
         public async Task<ActionResult<IEnumerable<OrderTable>>> GetAllCanceledOrder()
         {
-            //return _unitOfWork.OrderRepository.Get().ToList();
-            return _unitOfWork.OrderRepository.Get(includeProperties: "OrderItemTables").Where(a => a.StatusCode == 4).ToList();
+            return _orderService.GetAllCanceledOrderService();
         }
 
         // GET: api/Orders/5
         [HttpGet("{id}")]
         public async Task<ActionResult<OrderTable>> GetOrder(int id)
         {
-            var blog = _unitOfWork.OrderRepository.GetByID(id);
+            OrderTable blog = _orderService.GetOrderByIDService(id);
             if (blog == null)
             {
                 return NotFound();
@@ -123,65 +118,20 @@ namespace InternetShopWebApp.Controllers
             {
                 return BadRequest(ModelState);
             }
-            _unitOfWork.OrderRepository.Insert(Order);
-            _unitOfWork.Save();
+            _orderService.NewOrderService(Order);
             return CreatedAtAction("GetOrder", new { id = Order.OrderCode }, Order);
         }
+
+
 
         // PUT: api/Order/5
         [HttpPut("PrepareOrder/{id}")]
         public async Task<IActionResult> PrepareOrder(int id)
         {
-            int currentStatus = 2;
-            //_context.Entry(Order).State = EntityState.Modified;
-            var currentOrder = _unitOfWork.OrderRepository.GetByID(id);
-
-            bool isInsert = false;
-            OrderTable newOrder = new OrderTable();
-            newOrder.OrderFullfillment = currentOrder.OrderFullfillment;
-            newOrder.OrderDate = currentOrder.OrderDate;
-            newOrder.ClientCode = currentOrder.ClientCode;
-            newOrder.SalesmanCode = currentOrder.SalesmanCode;
-            newOrder.StatusCode = currentOrder.StatusCode;
-            var table = _unitOfWork.OrderRepository.Get(includeProperties: "OrderItemTables").LastOrDefault();
-            newOrder.OrderCode = table == null ? 0 :
-                                      table.OrderCode + 1;
-
-            var currentOrderRec = _unitOfWork.OrderRepository
-                .Get(includeProperties: "OrderItemTables")
-                .Where(a => a.OrderCode == id)
-                .LastOrDefault();
-
-            var currentOrderItemsRec = currentOrderRec.OrderItemTables.Where(a => a.StatusOrderItemTableId == 2);
-
-            if (currentOrderRec.OrderItemTables.Count() == currentOrderItemsRec.ToList().Count())
-                return NoContent();
-
-            List<OrderItemTable> OrderTableForRepalce = new List<OrderItemTable>();
-            foreach (var item in currentOrderItemsRec)
-            {
-                var current = _unitOfWork.OrderItemRepository.GetByID(item.OrderItemCode);
-                current.OrderCode = newOrder.OrderCode;
-                OrderTableForRepalce.Add(current);
-                isInsert = true;
-            }
-
-            if (isInsert)
-            {
-                _unitOfWork.OrderRepository.Insert(newOrder);
-                foreach (var item in OrderTableForRepalce)
-                {
-                    item.OrderCodeNavigation = null;
-                    _unitOfWork.OrderItemRepository.Update(item);
-                }
-                _unitOfWork.Save();
-            }
-
-            currentOrder.StatusCode = currentStatus;
-            _unitOfWork.OrderRepository.Update(currentOrder);
             try
             {
-                _unitOfWork.Save();
+                if (!_orderService.PrepareOrderService(id)) return NoContent();
+
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -200,35 +150,16 @@ namespace InternetShopWebApp.Controllers
             }
             return NoContent();
         }
+
+
 
         // PUT: api/Order/5
         [HttpPut("PaidOrder/{id}/{clientid}")]
         public async Task<IActionResult> PaidOrder(int id, int clientid)
         {
-            int currentStatus = 3;
-            //_context.Entry(Order).State = EntityState.Modified;
-            var currentOrder = _unitOfWork.OrderRepository.GetByID(id);
-
-            var currentOrderRec = _unitOfWork.OrderRepository
-                .Get(includeProperties: "OrderItemTables")
-                .Where(a => a.OrderCode == id)
-                .LastOrDefault();
-
-            ProductTable product;
-            foreach (var item in currentOrderRec.OrderItemTables)
-            {
-                product = _unitOfWork.ProductRepository.GetByID(item.ProductCode);
-                product.NumberInStock -= item.AmountOrderItem;
-                _unitOfWork.ProductRepository.Update(product);
-            }
-
-            currentOrder.SalesmanCode = clientid;
-            currentOrder.OrderFullfillment = DateTime.Now;
-            currentOrder.StatusCode = currentStatus;
-            _unitOfWork.OrderRepository.Update(currentOrder);
             try
             {
-                _unitOfWork.Save();
+                _orderService.PaidOrderService(id, clientid);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -247,20 +178,16 @@ namespace InternetShopWebApp.Controllers
             }
             return NoContent();
         }
+
+
 
         // PUT: api/Order/5
         [HttpPut("DeleteOrder/{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
-            int currentStatus = 4;
-            //_context.Entry(Order).State = EntityState.Modified;
-            var currentOrder = _unitOfWork.OrderRepository.GetByID(id);
-
-            currentOrder.StatusCode = currentStatus;
-            _unitOfWork.OrderRepository.Update(currentOrder);
             try
             {
-                _unitOfWork.Save();
+                _orderService.DeleteOrderService(id);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -279,6 +206,8 @@ namespace InternetShopWebApp.Controllers
             }
             return NoContent();
         }
+
+
 
         // PUT: api/Order/5
         [HttpPut("{id}")]
@@ -288,11 +217,9 @@ namespace InternetShopWebApp.Controllers
             {
                 return BadRequest();
             }
-            //_context.Entry(Order).State = EntityState.Modified;
-            _unitOfWork.OrderRepository.Update(Order);
             try
             {
-                _unitOfWork.Save();
+                _orderService.PutOrderService(Order);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -310,7 +237,7 @@ namespace InternetShopWebApp.Controllers
 
         private bool OrderExists(int id)
         {
-            return _unitOfWork.OrderRepository.GetByID(id) != null;
+            return _orderService.OrderExistService(id);
         }
 
         // DELETE: api/Order/5
@@ -318,16 +245,10 @@ namespace InternetShopWebApp.Controllers
         [Authorize(Roles = "user")]
         public async Task<IActionResult> DeleteOrder1(int id)
         {
-            //var blog = await _context.OrderTables.FindAsync(id);
-            var Order = _unitOfWork.OrderRepository.GetByID(id);
-            if (Order == null)
-            {
-                return NotFound();
-            }
-            _unitOfWork.OrderRepository.Delete(Order);
-            _unitOfWork.Save();
+            if (!_orderService.FullDeleteOrderService(id)) return NotFound();
 
             return NoContent();
         }
+
     }
 }

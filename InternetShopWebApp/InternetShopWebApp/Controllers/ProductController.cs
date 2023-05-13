@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using InternetShopWebApp.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
-using System.Data;
 using InternetShopWebApp.Repository;
 using InternetShopWebApp.Services;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 namespace InternetShopWebApp.Controllers
 {
@@ -14,24 +14,24 @@ namespace InternetShopWebApp.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly UnitOfWork _unitOfWork;
-        private readonly ProductService _productService = new ProductService();
-        public ProductController(UnitOfWork newUnitOfWork)
+        private readonly ProductService _productService ;
+        public ProductController(ProductService newProductService)
         {
-            _unitOfWork = newUnitOfWork;
+            _productService = newProductService;
         }
 
         // GET: api/Products
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductTable>>> GetAllProduct()
         {
-            return _unitOfWork.ProductRepository.Get().ToList();
+            return _productService.GetAllProductService();
         }
+
         // GET: api/Products/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductTable>> GetProduct(int id)
         {
-            var product = _unitOfWork.ProductRepository.GetByID(id);
+            ProductTable product = _productService.GetProductByIDService(id);
             if (product == null)
             {
                 return NotFound();
@@ -85,10 +85,7 @@ namespace InternetShopWebApp.Controllers
         [HttpGet("GetImage/{id}")]
         public IActionResult GetImage(int id)
         {
-            // Загрузите байты изображения из базы данных или другого источника по ID
-            byte[] imageBytes = _unitOfWork.ProductRepository.GetByID(id) != null ?
-                                _unitOfWork.ProductRepository.GetByID(id).Image :
-                                null;
+            byte[] imageBytes = _productService.GetImageService(id);
 
             if (imageBytes == null)
             {
@@ -98,21 +95,13 @@ namespace InternetShopWebApp.Controllers
             return File(imageBytes, "image/jpeg");
         }
 
-
         // POST: api/Product
         [HttpPost]
         [Authorize(Roles = "admin")]
         public async Task<ActionResult<ProductTable>> NewProduct(ProductTable Product)
         {
-            var allproducts = _unitOfWork.ProductRepository.Get();
-            int maxIndex = allproducts.Max(a => a.ProductCode);
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            Product.ProductCode = maxIndex + 1;
-            _unitOfWork.ProductRepository.Insert(Product);
-            _unitOfWork.Save();
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            if (!_productService.NewProductService(Product)) return BadRequest(ModelState);
             return CreatedAtAction("GetProduct", new { id = Product.ProductCode }, Product);
         }
 
@@ -125,11 +114,9 @@ namespace InternetShopWebApp.Controllers
             {
                 return BadRequest();
             }
-            //_context.Entry(Product).State = EntityState.Modified;
-            _unitOfWork.ProductRepository.Update(Product);
             try
             {
-                _unitOfWork.Save();
+                _productService.PutProductService(Product);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -144,20 +131,17 @@ namespace InternetShopWebApp.Controllers
             }
             return NoContent();
         }
+
+
 
         // PUT: api/Product/5
         [HttpPut("{id}/{amount}")]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> PutNewAmountProduct(int id, int amount)
         {
-            //_context.Entry(Product).State = EntityState.Modified;
-            //_unitOfWork.ProductRepository.Update(Product);
-            var product = _unitOfWork.ProductRepository.GetByID(id);
-            product.NumberInStock = amount;
-            _unitOfWork.ProductRepository.Update(product);
             try
             {
-                _unitOfWork.Save();
+                _productService.PutNewAmountService(id, amount); 
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -173,9 +157,10 @@ namespace InternetShopWebApp.Controllers
             return NoContent();
         }
 
+
         private bool ProductExists(int id)
         {
-            return _unitOfWork.ProductRepository.GetByID(id) != null;
+            return _productService.ProductExistService(id);
         }
 
         // DELETE: api/Product/5
@@ -183,14 +168,12 @@ namespace InternetShopWebApp.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            //var product = await _context.ProductTables.FindAsync(id);
-            var product = _unitOfWork.ProductRepository.GetByID(id);
+            var product = _productService.GetProductByIDService(id);
             if (product == null)
             {
                 return NotFound();
             }
-            _unitOfWork.ProductRepository.Delete(product);
-            _unitOfWork.Save();
+            if (!_productService.DeleteSaveProductService(product)) return BadRequest();
             return NoContent();
         }
     }

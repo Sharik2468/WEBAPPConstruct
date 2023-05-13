@@ -2,8 +2,8 @@ using InternetShopWebApp.Context;
 using InternetShopWebApp.Data;
 using InternetShopWebApp.Models;
 using InternetShopWebApp.Repository;
+using InternetShopWebApp.Services;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +22,8 @@ builder.Services.AddCors(options =>
 // Add services to the container.
 
 builder.Services.AddScoped(typeof(UnitOfWork));
+builder.Services.AddScoped(typeof(ProductService));
+builder.Services.AddScoped(typeof(OrderServices));
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

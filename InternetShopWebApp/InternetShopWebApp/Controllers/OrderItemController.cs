@@ -16,56 +16,48 @@ namespace InternetShopWebApp.Controllers
     [ApiController]
     public class OrderItemController : ControllerBase
     {
-        private readonly OrderServices _orderService = new OrderServices();
-        private readonly UnitOfWork _unitOfWork;
+        private readonly OrderServices _orderService;
 
-        public OrderItemController(UnitOfWork newUnitOfWork)
+        public OrderItemController(OrderServices newOrderService)
         {
-            _unitOfWork = newUnitOfWork;
+            _orderService = newOrderService;
         }
 
         // GET: api/OrderItems
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderItemTable>>> GetAllOrderItem()
         {
-            //return _unitOfWork.OrderItemRepository.Get().ToList();
-            return _unitOfWork.OrderItemRepository.Get(includeProperties: "ProductCodeNavigation,OrderCodeNavigation").ToList();
+            return _orderService.GetAllOrderItemService();
         }
+
 
         // GET: api/Status
         [HttpGet("GetAllOrderItemStatuses")]
         public async Task<ActionResult<IEnumerable<StatusOrderItemTable>>> GetAllOrderItemStatuses()
         {
-            //return _unitOfWork.OrderRepository.Get().ToList();
-            return _unitOfWork.StatusOrderItemRepository.Get().ToList();
+            return _orderService.GetAllOrderItemStatusesService();
         }
+
 
         // GET: api/Status
         [HttpGet("GetAllInStockOrderItem")]
         public async Task<ActionResult<IEnumerable<OrderItemTable>>> GetAllInStockOrderItem()
         {
-            //return _unitOfWork.OrderRepository.Get().ToList();
-            return _unitOfWork.OrderItemRepository.Get(includeProperties: "ProductCodeNavigation,OrderCodeNavigation").Where(a=>a.StatusOrderItemTableId==1).ToList();
+            return _orderService.GetAllInStockOrderItemService();
         }
 
         // GET: api/Status
         [HttpGet("GetAllCanceledOrderItem")]
         public async Task<ActionResult<IEnumerable<OrderItemTable>>> GetAllCanceledOrderItem()
         {
-            //return _unitOfWork.OrderRepository.Get().ToList();
-            return _unitOfWork.OrderItemRepository.Get(includeProperties: "ProductCodeNavigation,OrderCodeNavigation").Where(a => a.StatusOrderItemTableId == 2).ToList();
+            return _orderService.GetAllCanceledOrderItemService();
         }
 
         // GET: api/OrderItems/5
         [HttpGet("{id}")]
         public async Task<ActionResult<IEnumerable<OrderItemTable>>> GetOrderItem(int id)
         {
-            //var orderitem = _unitOfWork.OrderItemRepository.GetByID(id);
             var orderitem = _orderService.GetAllActiveOrderItemsByClientId(id);
-            var products = _unitOfWork.ProductRepository.Get();
-
-            foreach (var item in orderitem)
-                item.ProductCodeNavigation = products.Where(a => a.ProductCode == item.ProductCode).FirstOrDefault();
 
             if (orderitem == null)
             {
@@ -86,13 +78,6 @@ namespace InternetShopWebApp.Controllers
             int first = words[0] == null ? -1 : int.Parse(words[0]);
             int second = words[1] == null ? -1 : int.Parse(words[1]);
 
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(ModelState);
-            //}
-            //_unitOfWork.OrderItemRepository.Insert(OrderItem);
-            //_unitOfWork.Save();
-
             var result = _orderService.AddNewOrderItem(first, second);
             return CreatedAtAction("GetOrderItem", new { id = result.OrderItemCode }, result);
         }
@@ -101,7 +86,7 @@ namespace InternetShopWebApp.Controllers
         [HttpGet("GetOrderItemStatus/{id}")]
         public async Task<ActionResult<StatusOrderItemTable>> GetOrderItesStatusByID(int id)
         {
-            var status = _unitOfWork.StatusOrderItemRepository.GetByID(id);
+            StatusOrderItemTable status = _orderService.GetOrderItemStatusByIDService(id);
             if (status == null)
             {
                 return NotFound();
@@ -117,10 +102,9 @@ namespace InternetShopWebApp.Controllers
             {
                 return BadRequest();
             }
-            _unitOfWork.OrderItemRepository.Update(OrderItem);
             try
             {
-                _unitOfWork.Save();
+                _orderService.PutClearOrderItemService(OrderItem);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -136,16 +120,14 @@ namespace InternetShopWebApp.Controllers
             return NoContent();
         }
 
+
         // PUT: api/OrderItem/5
         [HttpPut("PutNewStatusID/{id}/{status}")]
         public async Task<IActionResult> PutStatusIDOrderItem(int id, int status)
         {
-            var OrderItem = _unitOfWork.OrderItemRepository.GetByID(id);
-            OrderItem.StatusOrderItemTableId = status;
-            _unitOfWork.OrderItemRepository.Update(OrderItem);
             try
             {
-                _unitOfWork.Save();
+                _orderService.PutStatusIDForOrderItemService(id, status);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -173,28 +155,12 @@ namespace InternetShopWebApp.Controllers
                 DeleteOrderItem(id);
             }
 
-            //_unitOfWork.OrderItemRepository.Update();
-            //try
-            //{
-            //    _unitOfWork.Save();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!OrderItemExists(id))
-            //    {
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
             return NoContent();
         }
 
         private bool OrderItemExists(int id)
         {
-            return _unitOfWork.OrderItemRepository.Get().Any(e => e.OrderItemCode == id);
+            return _orderService.OrderItemExistService(id);
         }
 
         // DELETE: api/OrderItem/5
@@ -202,21 +168,7 @@ namespace InternetShopWebApp.Controllers
         [Authorize(Roles = "user")]
         public async Task<IActionResult> DeleteOrderItem(int id)
         {
-            var order = _orderService.GetOrderByOrderItemID(id);
-            var orderitem = _unitOfWork.OrderItemRepository.GetByID(id);
-            if (orderitem == null)
-            {
-                return NotFound();
-            }
-            _unitOfWork.OrderItemRepository.Delete(orderitem);
-            _unitOfWork.Save();
-
-            if (order.OrderItemTables.Count() - 1 == 0)
-            {
-                order.OrderItemTables.Clear();
-                _unitOfWork.OrderRepository.Delete(order);
-                _unitOfWork.Save();
-            }
+            if (!_orderService.DeleteOrderItemService(id)) return NotFound();
 
             return NoContent();
         }

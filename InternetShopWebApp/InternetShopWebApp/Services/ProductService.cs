@@ -1,5 +1,6 @@
 ﻿using InternetShopWebApp.Models;
 using InternetShopWebApp.Repository;
+using Microsoft.AspNetCore.Mvc;
 
 namespace InternetShopWebApp.Services
 {
@@ -68,5 +69,80 @@ namespace InternetShopWebApp.Services
 
             return productsByCategoryName.Intersect(productsBySearchName).ToList();
         }
+
+        #region Services
+
+        public ActionResult<IEnumerable<ProductTable>> GetAllProductService()
+        {
+            return _unitOfWork.ProductRepository.Get().ToList();
+        }
+        public ProductTable GetProductByIDService(int id)
+        {
+            return _unitOfWork.ProductRepository.GetByID(id);
+        }
+        /// <summary>
+        /// Возвращает фотографию продукта
+        /// </summary>
+        /// <param name="id">Код продукта</param>
+        /// <returns></returns>
+        public byte[] GetImageService(int id)
+        {
+            // Загрузите байты изображения из базы данных или другого источника по ID
+            return _unitOfWork.ProductRepository.GetByID(id) != null ?
+                                _unitOfWork.ProductRepository.GetByID(id).Image :
+                                null;
+        }
+        public bool NewProductService(ProductTable Product)
+        {
+            try
+            {
+                var allproducts = _unitOfWork.ProductRepository.Get();
+                int maxIndex = allproducts.Max(a => a.ProductCode);
+                Product.ProductCode = maxIndex + 1;
+                _unitOfWork.ProductRepository.Insert(Product);
+                _unitOfWork.Save();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+        public void PutProductService(ProductTable Product)
+        {
+            _unitOfWork.ProductRepository.Update(Product);
+            _unitOfWork.Save();
+        }
+        /// <summary>
+        /// Устанавливает новое знанчение количества продуктов на складе
+        /// </summary>
+        /// <param name="id">Код продукта</param>
+        /// <param name="amount">Количество продукта</param>
+        public void PutNewAmountService(int id, int amount)
+        {
+            var product = _unitOfWork.ProductRepository.GetByID(id);
+            product.NumberInStock = amount;
+            _unitOfWork.ProductRepository.Update(product);
+            _unitOfWork.Save();
+        }
+        public bool ProductExistService(int id)
+        {
+            return _unitOfWork.ProductRepository.GetByID(id) != null;
+        }
+        public bool DeleteSaveProductService(ProductTable product)
+        {
+            try
+            {
+                _unitOfWork.ProductRepository.Delete(product);
+                _unitOfWork.Save();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+        #endregion
     }
 }
