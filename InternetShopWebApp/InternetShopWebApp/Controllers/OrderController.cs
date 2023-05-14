@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
 using InternetShopWebApp.Repository;
 using InternetShopWebApp.Services;
+using ASPNetCoreApp.Controllers;
 
 namespace InternetShopWebApp.Controllers
 {
@@ -14,10 +15,12 @@ namespace InternetShopWebApp.Controllers
     public class OrderController : ControllerBase
     {
         private readonly OrderServices _orderService;
+        private readonly ILogger<OrderController> _logger;
 
-        public OrderController(OrderServices newOrderService)
+        public OrderController(OrderServices newOrderService, ILogger<OrderController> logger)
         {
             _orderService = newOrderService;
+            _logger = logger;
         }
 
         // GET: api/Orders
@@ -32,6 +35,13 @@ namespace InternetShopWebApp.Controllers
         public async Task<ActionResult<IEnumerable<StatusTable>>> GetAllStatus()
         {
             return _orderService.GetAllStatusServices();
+        }
+
+        // GET: api/Status
+        [HttpGet("GetAllUniqueOrdersCount/{clientid}")]
+        public List<Tuple<DateTime, int>> GetAllUniqueOrdersCount(int clientid)
+        {
+            return _orderService.GetDateAmountOrder(clientid);
         }
 
 
@@ -84,10 +94,32 @@ namespace InternetShopWebApp.Controllers
         }
 
         // GET: api/Status
+        [HttpGet("GetAllAdminOrder/{clientid}")]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult<IEnumerable<OrderTable>>> GetAlladminOrder(int clientid)
+        {
+            return _orderService.GetAllAdminOrderService(clientid);
+        }
+
+        // GET: api/Status
         [HttpGet("GetAllPaidOrder")]
         public async Task<ActionResult<IEnumerable<OrderTable>>> GetAllPaidOrder()
         {
             return _orderService.GetAllPaidOrderService();
+        }
+
+        // GET: api/Status
+        [HttpGet("GetRevenue/{Date}/{clientid}")]
+        public int GetRevenue(DateTime Date, int clientid)
+        {
+            return _orderService.GetRevenue(Date, clientid);
+        }
+
+        // GET: api/Status
+        [HttpGet("GetRevenue/{clientid}")]
+        public int GetRevenueForAllDays(int clientid)
+        {
+            return _orderService.GetRevenueForAllDays(clientid);
         }
 
 
@@ -119,6 +151,7 @@ namespace InternetShopWebApp.Controllers
                 return BadRequest(ModelState);
             }
             _orderService.NewOrderService(Order);
+            _logger.LogInformation("New order create: " + Order.OrderCode);
             return CreatedAtAction("GetOrder", new { id = Order.OrderCode }, Order);
         }
 
@@ -160,6 +193,7 @@ namespace InternetShopWebApp.Controllers
             try
             {
                 _orderService.PaidOrderService(id, clientid);
+                _logger.LogInformation("Order paid: " + id + " Client id: " + clientid);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -188,6 +222,7 @@ namespace InternetShopWebApp.Controllers
             try
             {
                 _orderService.DeleteOrderService(id);
+                _logger.LogInformation("Order delete: " + id);
             }
             catch (DbUpdateConcurrencyException)
             {

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React from 'react';
 const OrderItemCreate = ({user, addOrderItem}) => {
   const handleSubmit = (e) => {
@@ -15,7 +16,7 @@ const OrderItemCreate = ({user, addOrderItem}) => {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(OrderItem),
       };
-      const response = await fetch("api/OrderItem/",
+      const response = await fetch('api/OrderItem/',
 
           requestOptions);
 
@@ -35,14 +36,14 @@ const OrderItemCreate = ({user, addOrderItem}) => {
   };
   return (
     <React.Fragment>
-        {user.isAuthenticated && user.userRole != 'admin' ? (
+      {user.isAuthenticated && user.userRole != 'admin' ? (
                 <><h3>Создание новой строки заказа</h3><form onSubmit={handleSubmit}>
                   <label>OrderItem: </label>
                   <input type="text" name="url" placeholder="Введите новую строку заказа:" />
                   <button type="submit">Создать</button>
-              </form></>
+                </form></>
               ) : (
-                ""
+                ''
               )}
     </React.Fragment >
   );

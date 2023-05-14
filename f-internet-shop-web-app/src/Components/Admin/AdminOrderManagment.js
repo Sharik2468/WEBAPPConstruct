@@ -52,7 +52,7 @@ const ManagmentOrder = () => {
         // Создаем словарь, который сопоставляет normalCode с пользователем
         const usersDict = {};
         for (const user of usersData) {
-          usersDict[user.normalCode] = user;
+          usersDict[user.id] = user;
         }
 
         console.log('Users:', usersDict);
@@ -124,7 +124,7 @@ const ManagmentOrder = () => {
 
   return (
     <React.Fragment>
-      <h3>Активные заказы</h3>
+      <h3>Неоплаченные заказы</h3>
       {Orders && Orders.length > 0 && user.userID !== -1 && user.userRole === 'admin' ? (
         <List
           grid={{
@@ -137,11 +137,7 @@ const ManagmentOrder = () => {
             return (
               <List.Item key={orderCode}>
                 <Card title={`Код заказа: ${orderCode}, 
-                Почта клиента: ${Users[clientCode]?.email || 'loading...'}`}>
-                  <Button onClick={() => handleStatusOrderChangeButtonClick(orderCode, 3)} type="primary">
-                          Заказ оплачен</Button>
-                  <Button onClick={() => handleStatusOrderChangeButtonClick(orderCode, 4)} type="primary">
-                          Отменить заказ</Button>
+                Почта клиента: ${Users[clientCode]?.userName || 'loading...'}`}>
                   {orderItemTables &&
                     orderItemTables.map((item) => (
                       <div className="OrderItemText" key={item.productCode} id={item.productCode}>
@@ -161,13 +157,23 @@ const ManagmentOrder = () => {
                       <Statistic title="Общая сумма заказа(руб)" value={totalOrderSum} formatter={formatter}/>
                     </Col>
                   </Row>
+                  <Row gutter={16}>
+                    <Col>
+                      <Button onClick={() => handleStatusOrderChangeButtonClick(orderCode, 3)} type="primary">
+                          Заказ оплачен</Button>
+                    </Col>
+                    <Col>
+                      <Button onClick={() => handleStatusOrderChangeButtonClick(orderCode, 4)} type="primary">
+                          Отменить заказ</Button>
+                    </Col>
+                  </Row>
                 </Card>
               </List.Item>
             );
           }}
         />
       ) : (
-        <p>Нет активных заказов...</p>
+        <p>Все заказы оплачены...</p>
       )}
     </React.Fragment>
   );

@@ -71,7 +71,7 @@ const UserHistoryOrder = () => {
 
   return (
     <React.Fragment>
-      <h3>Активные заказы</h3>
+      <h3>История заказов</h3>
       {Orders && Orders.length > 0 && user.userID !== -1 && user.userRole === 'user' ? (
         <List
           grid={{

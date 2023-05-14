@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {Button, Form, Input} from 'antd';
@@ -35,7 +36,7 @@ typeof data.userName !== 'undefined'
               typeof data !== 'undefined' &&
 typeof data.error !== 'undefined' &&
 typeof data.userRole !== 'undefined';
-setErrorMessages(data.error);
+              setErrorMessages(data.error);
             },
             (error) => {
               console.log(error);

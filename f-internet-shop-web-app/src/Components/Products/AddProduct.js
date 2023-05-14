@@ -226,11 +226,10 @@ const AddProductForm = () => {
         }}
         onFinish={onFinish}
       >
-        {/* Add your form items here */}
         {/* <Form.Item label="Product Code" name="productCode" rules={[{required: true, message: 'Введите код продукта'}]}>
           <InputNumber min={1} />
         </Form.Item> */}
-        <Form.Item label="Название продукта" name="nameProduct" rules={[{required: true, message: 'Введите название продукта'}]}>
+        <Form.Item label="Название продукта" name="nameProduct" labelCol={{style: {paddingRight: '10px'}}} rules={[{required: true, message: 'Введите название продукта'}]}>
           <Input />
         </Form.Item>
         <Form.Item label="Описание" name="description">
@@ -241,26 +240,27 @@ const AddProductForm = () => {
             <Button icon={<PlusOutlined />}>Загрузить изображение</Button>
           </Upload>
         </Form.Item>
-        <Form.Item label="Рыночная цена" name="marketPriceProduct" rules={[{required: true, message: 'Введите рыночную цену продукта'}]}>
+        <Form.Item label="Рыночная цена" name="marketPriceProduct" labelCol={{style: {paddingRight: '10px'}}} rules={[{required: true, message: 'Введите рыночную цену продукта'}]}>
           <InputNumber min={0} />
         </Form.Item>
-        <Form.Item label="Закупочная стоимость" name="purchasePriceProduct" rules={[{required: true, message: 'Введите закупочную цену продукта'}]}>
+        <Form.Item label="Закупочная стоимость" name="purchasePriceProduct" labelCol={{style: {paddingRight: '10px'}}} rules={[{required: true, message: 'Введите закупочную цену продукта'}]}>
           <InputNumber min={0} />
         </Form.Item>
-        <Form.Item label="В наличии" name="numberInStock" rules={[{required: true, message: 'Введите количество продукта на складе'}]}>
+        <Form.Item label="В наличии" name="numberInStock" labelCol={{style: {paddingRight: '10px'}}} rules={[{required: true, message: 'Введите количество продукта на складе'}]}>
           <InputNumber min={0} />
         </Form.Item>
-        <Form.Item label="Дата производства" name="dateOfManufactureProduct"
+        <Form.Item label="Дата производства" name="dateOfManufactureProduct" labelCol={{style: {paddingRight: '10px'}}}
           rules={[{required: true, message: 'Выберите дату изготовления продукта'}]}
         >
           <DatePicker />
         </Form.Item>
-        <Form.Item label="Гарантия" name="bestBeforeDateProduct" rules={[{required: true, message: 'Введите срок годности продукта (в днях)'}]}>
+        <Form.Item label="Гарантия" name="bestBeforeDateProduct" labelCol={{style: {paddingRight: '10px'}}} rules={[{required: true, message: 'Введите срок годности продукта (в днях)'}]}>
           <InputNumber min={1} />
         </Form.Item>
         <Form.Item
           label="Категория"
           name="category"
+          labelCol={{style: {paddingRight: '10px'}}}
           rules={[{required: true, message: 'Выберите категорию'}]}
         >
           <Cascader

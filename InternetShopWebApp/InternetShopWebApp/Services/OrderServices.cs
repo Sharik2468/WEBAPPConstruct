@@ -6,7 +6,12 @@ namespace InternetShopWebApp.Services
 {
     public class OrderServices
     {
-        private UnitOfWork _unitOfWork = new UnitOfWork();
+        private UnitOfWork _unitOfWork;
+
+        public OrderServices(UnitOfWork newUnitOfWork)
+        {
+            _unitOfWork = newUnitOfWork;
+        }
 
         /// <summary>
         /// Возвращает строки заказа(товары из корзины) по активному заказу.
@@ -101,7 +106,7 @@ namespace InternetShopWebApp.Services
                 var currentProduct = _unitOfWork.ProductRepository.Get().Where(a => a.ProductCode == ProductId).FirstOrDefault();
 
                 var createdOrderItems = GetAllOrderItemByOrderId(currentOrder.OrderCode);
-                var repeatProduct = createdOrderItems.Where(a => 
+                var repeatProduct = createdOrderItems.Where(a =>
                 a.ProductCode == currentProduct.ProductCode).FirstOrDefault();
 
                 if (createdOrderItems == null || repeatProduct == null)
@@ -127,7 +132,7 @@ namespace InternetShopWebApp.Services
                 else
                 {
                     int amount = (int)repeatProduct.AmountOrderItem;
-                    repeatProduct.AmountOrderItem = currentProduct.NumberInStock >= amount+1 ? amount+1 : currentProduct.NumberInStock;
+                    repeatProduct.AmountOrderItem = currentProduct.NumberInStock >= amount + 1 ? amount + 1 : currentProduct.NumberInStock;
                     repeatProduct.OrderSum = repeatProduct.AmountOrderItem * currentProduct.MarketPriceProduct;
 
                     _unitOfWork.OrderItemRepository.Update(repeatProduct);
@@ -142,9 +147,76 @@ namespace InternetShopWebApp.Services
             }
         }
 
+        public List<OrderTable> GetUniqueDateOrder(int clientid)
+        {
+            var orders = _unitOfWork.OrderRepository
+                .Get().Where(a => a.StatusCode == 3 && a.SalesmanCode == clientid).ToList();
 
+            // Группируем заказы по дате выполнения и выбираем первый заказ из каждой группы
+            var uniqueDateOrders = orders
+                .GroupBy(order => order.OrderFullfillment.Value.Date)
+                .Select(group => group.First())
+                .ToList();
 
-        //Сервисы
+            return uniqueDateOrders;
+        }
+        /// <summary>
+        /// Возвращает массив с датами и количеством покупок в этой дате
+        /// </summary>
+        /// <returns></returns>
+        public List<Tuple<DateTime, int>> GetDateAmountOrder(int clientid)
+        {
+            var orders = _unitOfWork.OrderRepository.Get().ToList();
+
+            // Оставляем только уникальные заказы
+            var uniqueOrders = GetUniqueDateOrder(clientid);
+            List<Tuple<DateTime, int>> Result = new List<Tuple<DateTime, int>>();
+
+            foreach (var item in uniqueOrders)
+            {
+                DateTime targetDate = (DateTime)item.OrderFullfillment;// Задайте целевую дату здесь
+
+                // Считаем количество уникальных заказов в целевую дату
+                int ordersCountForTheDay = orders
+                    .Count(order => order.OrderFullfillment == targetDate.Date
+                    && order.SalesmanCode == clientid);
+
+                Tuple<DateTime, int> newDate = new Tuple<DateTime, int>(targetDate, ordersCountForTheDay);
+                Result.Add(newDate);
+            }
+
+            return Result;
+        }
+
+        public int GetRevenue(DateTime time, int clientid)
+        {
+            var orders = _unitOfWork.OrderRepository.Get(includeProperties: "OrderItemTables")
+                .Where(a => a.OrderFullfillment == time && a.SalesmanCode == clientid);
+            int Revenue = 0;
+            foreach (var order in orders)
+            {
+                foreach (var item in order.OrderItemTables)
+                {
+                    ProductTable prod = _unitOfWork.ProductRepository.GetByID(item.ProductCode);
+                    Revenue += (int)(prod.MarketPriceProduct - prod.PurchasePriceProduct);
+                }
+            }
+
+            return Revenue;
+        }
+
+        public int GetRevenueForAllDays(int clientid)
+        {
+            var uniqueOrders = GetUniqueDateOrder(clientid);
+            int Revenue = 0;
+
+            foreach (var order in uniqueOrders)
+                Revenue += GetRevenue((DateTime)order.OrderFullfillment, clientid);
+
+            return Revenue;
+        }
+
+        //Для вызовов в контролере
 
         #region Services
 
@@ -182,9 +254,17 @@ namespace InternetShopWebApp.Services
                 .Where(a => a.ClientCode == clientid
                 && (a.StatusCode == 3 || a.StatusCode == 4)).ToList();
         }
+        public ActionResult<IEnumerable<OrderTable>> GetAllAdminOrderService(int clientid)
+        {
+            return _unitOfWork.OrderRepository.Get(includeProperties: "OrderItemTables")
+                .Where(a => a.SalesmanCode == clientid
+                && a.StatusCode == 3).ToList();
+        }
         public ActionResult<IEnumerable<OrderTable>> GetAllPaidOrderService()
         {
-            return _unitOfWork.OrderRepository.Get(includeProperties: "OrderItemTables").Where(a => a.StatusCode == 3).ToList();
+            return _unitOfWork.OrderRepository
+                .Get(includeProperties: "OrderItemTables")
+                .Where(a => a.StatusCode == 3).ToList();
         }
         public ActionResult<IEnumerable<OrderTable>> GetAllCanceledOrderService()
         {

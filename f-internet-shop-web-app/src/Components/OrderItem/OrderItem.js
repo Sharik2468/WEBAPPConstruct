@@ -3,10 +3,15 @@
 /* eslint-disable camelcase */
 import React, {useEffect, useState, useContext} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {Card, List, Descriptions, Button, Col, InputNumber, Row, Slider, Statistic, notification} from 'antd';
+import {Card, List, Descriptions, Button, Col, InputNumber, Row, Slider, Statistic, notification, Modal} from 'antd';
 import './Style.css';
 import UserContext from '../Authorization/UserContext';
 import CountUp from 'react-countup';
+import {
+  ExclamationCircleFilled,
+} from '@ant-design/icons';
+
+const {confirm} = Modal;
 
 const formatter = (value) => <CountUp end={value} separator="," />;
 
@@ -227,6 +232,26 @@ const OrderItem = ({OrderItems, setOrderItems, removeOrderItem}) => {
     }, 0);
   };
 
+  const showConfirm = ({order_Item_Code}) => {
+    confirm({
+      title: 'Вы действительно хотите удалить товар из корзины?',
+      icon: <ExclamationCircleFilled />,
+      content: 'Действие необратимо.',
+      async onOk() {
+        try {
+          await deleteOrderItem({order_Item_Code});
+          console.log('OK');
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
+
+
   return (
     <React.Fragment>
       <h3>Ваша корзина</h3>
@@ -266,25 +291,29 @@ const OrderItem = ({OrderItems, setOrderItems, removeOrderItem}) => {
                             {productCodeNavigation.marketPriceProduct*amountOrderItem} Рублей
                           </Descriptions.Item>
                         </Descriptions>
-                        <Button onClick={() => handleButtonClick(productCodeNavigation.productCode)} type="primary">Подробнее</Button>
-                        {user && user.isAuthenticated && user.userRole === 'user' && (
-                          <>
-                            <Button
-                              type="text"
-                              onClick={() => deleteOrderItem({order_Item_Code: orderItemCode})}
-                            >
-                      Удалить товар из корзины
-                            </Button>
-                            <IntegerStep
-                              maxValue={productCodeNavigation.numberInStock}
-                              onSliderChange={handleSliderChange}
-                            />
-                            <Button onClick={() => handleSliderButtonClick(orderItemCode)}>
+
+
+                        <Button style={{marginRight: '10px'}} onClick={() => handleButtonClick(productCodeNavigation.productCode)} type="primary">Подробнее</Button>
+                        <Button
+                          type="text"
+                          style={{marginRight: '10px'}}
+                          onClick={() => showConfirm({order_Item_Code: orderItemCode})}
+                        >
+  Удалить товар из корзины
+                        </Button>
+
+
+                        <IntegerStep
+                          maxValue={productCodeNavigation.numberInStock}
+                          onSliderChange={handleSliderChange}
+                        />
+
+                        <Button style={{marginRight: '10px'}} onClick={() => handleSliderButtonClick(orderItemCode)}>
                           Изменить количество товара</Button>
-                            <Button onClick={() => handleStatusOrderItemChangeButtonClick(orderItemCode, statusOrderItemTableId==1?2:1)}>
+                        <Button style={{marginRight: '10px'}} onClick={() => handleStatusOrderItemChangeButtonClick(orderItemCode, statusOrderItemTableId==1?2:1)}>
                           Изменить состояние товара</Button>
-                          </>
-                        )}
+
+
                         <hr />
                       </div>
                     )}
@@ -294,14 +323,14 @@ const OrderItem = ({OrderItems, setOrderItems, removeOrderItem}) => {
             />
           </Row>
           <Row gutter={16}>
-            <Col span={12}>
+            <Col span={6}>
               <Statistic
                 title="Общая стоимость заказов"
                 value={getTotalCost()}
                 formatter={formatter}
               />
             </Col>
-            <Col span={12}>
+            <Col span={6}>
               <Button type="primary" onClick={() => handleStatusChangeButtonClick(OrderItems[0].orderCode)}>
                           Оформить заказ</Button>
             </Col>

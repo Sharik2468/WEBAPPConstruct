@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "D6kj5Xhz6DgGMGmeold7KtegTkJJRRcZsakLfNVKOwJc2CyQUkU6DV1x6IjhKXSvPc/oyptarK8W666k4GpLfw==",
+  "dgSpecHash": "7euGSqRAFboqJ7W2LROo6hCsuYRpEwFMm3W/IL29O5tyY/1iRjHYJBvW0RjfcpnY1B0W/AoHvOUWddCtwPhn4A==",
   "success": true,
   "projectFilePath": "C:\\Users\\ADMIN\\Desktop\\UniversityWork\\WEBAPPConstruct\\InternetShopWebApp\\InternetShopWebApp\\InternetShopWebApp.csproj",
   "expectedPackageFiles": [
@@ -51,6 +51,9 @@
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
+    "C:\\Users\\ADMIN\\.nuget\\packages\\nlog\\5.1.4\\nlog.5.1.4.nupkg.sha512",
+    "C:\\Users\\ADMIN\\.nuget\\packages\\nlog.extensions.logging\\5.2.3\\nlog.extensions.logging.5.2.3.nupkg.sha512",
+    "C:\\Users\\ADMIN\\.nuget\\packages\\nlog.web.aspnetcore\\5.2.3\\nlog.web.aspnetcore.5.2.3.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\runtime.native.system.data.sqlclient.sni\\4.7.0\\runtime.native.system.data.sqlclient.sni.4.7.0.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\ADMIN\\.nuget\\packages\\runtime.win-x64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",

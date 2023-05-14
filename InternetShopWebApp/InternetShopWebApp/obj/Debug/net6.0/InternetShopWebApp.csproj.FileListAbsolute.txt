@@ -99,3 +99,7 @@ C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\Interne
 C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\InternetShopWebApp\obj\Debug\net6.0\InternetShopWebApp.pdb
 C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\InternetShopWebApp\obj\Debug\net6.0\InternetShopWebApp.genruntimeconfig.cache
 C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\InternetShopWebApp\obj\Debug\net6.0\ref\InternetShopWebApp.dll
+C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\InternetShopWebApp\bin\Debug\net6.0\nlog.config
+C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\InternetShopWebApp\bin\Debug\net6.0\NLog.dll
+C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\InternetShopWebApp\bin\Debug\net6.0\NLog.Extensions.Logging.dll
+C:\Users\ADMIN\Desktop\UniversityWork\WEBAPPConstruct\InternetShopWebApp\InternetShopWebApp\bin\Debug\net6.0\NLog.Web.AspNetCore.dll

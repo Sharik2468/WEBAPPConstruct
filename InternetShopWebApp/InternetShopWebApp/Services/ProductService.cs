@@ -6,9 +6,14 @@ namespace InternetShopWebApp.Services
 {
     public class ProductService
     {
-        private UnitOfWork _unitOfWork = new UnitOfWork();
-        private OrderServices _orderService = new OrderServices();
+        private UnitOfWork _unitOfWork;
+        private OrderServices _orderService;
 
+        public ProductService(OrderServices newOrderService, UnitOfWork newUnitOfWork)
+        {
+            _orderService = newOrderService;
+            _unitOfWork = newUnitOfWork;
+        }
         public List<ProductTable> GetProductsByOrderItemID(int ClientID)
         {
             var orderItems = _orderService.GetAllActiveOrderItemsByClientId(ClientID);

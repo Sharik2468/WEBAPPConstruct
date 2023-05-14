@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import React, {useState, useContext} from 'react';
 import {Outlet, Link} from 'react-router-dom';
-import {Layout as LayoutAntd, Menu, Button} from 'antd';
+import {Layout as LayoutAntd, Menu, Button, Row, Col, Image} from 'antd';
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
@@ -15,39 +15,14 @@ import {
   UserOutlined,
   ProfileOutlined,
   EditOutlined,
+  DollarOutlined,
+  IdcardOutlined,
 } from '@ant-design/icons';
 import './LayoutStyle.css';
 import UserContext from '../Authorization/UserContext';
 
 const {Header, Content, Footer, Sider} = LayoutAntd;
 const {SubMenu} = Menu;
-
-// const items = [
-//   {
-//     label: <Link to={'/'}>Главная</Link>,
-//     key: '1',
-//   },
-//   {
-//     label: <Link to={'/products'}>Товары</Link>,
-//     key: '2',
-//   },
-//   {
-//     label: <Link to={'/OrderItems'}>Строки заказа</Link>,
-//     key: '3',
-//   },
-//   {
-//     label: <Link to={'/login'}>Вход</Link>,
-//     key: '4',
-//   },
-//   {
-//     label: <Link to={'/logout'}>Выход</Link>,
-//     key: '5',
-//   },
-//   {
-//     label: <Link to={'/register'}>Регистрация</Link>,
-//     key: '6',
-//   },
-// ];
 
 const Layout = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -70,7 +45,13 @@ const Layout = () => {
                 <Link to="/addproduct">Добавить продукт</Link>
               </Menu.Item>
               <Menu.Item key="8" icon={<ProfileOutlined />}>
-                <Link to="/ordermanagment">Управление заказами</Link>
+                <Link to="/ordermanagment">Управление</Link>
+              </Menu.Item>
+              <Menu.Item key="10" icon={<DollarOutlined />}>
+                <Link to="/adminorderhistory">О продажах</Link>
+              </Menu.Item>
+              <Menu.Item key="11" icon={<IdcardOutlined />}>
+                <Link to="/usermanagment">Пользователи</Link>
               </Menu.Item>
             </SubMenu>
           ) : (<></>
@@ -122,7 +103,22 @@ const Layout = () => {
           </div>
         </Header>
         <Content className="content">
-          <Outlet />
+          <Row justify="center" align="middle">
+            <Col>
+              <Link to="/">
+                <Image
+                  src={process.env.PUBLIC_URL + '/ElectronixLogoNF.png'}
+                  preview={false}
+                />
+              </Link>
+            </Col>
+          </Row>
+          <p></p>
+          <Row justify="center" align="middle">
+            <Col span={24}>
+              <Outlet />
+            </Col>
+          </Row>
         </Content>
         <Footer style={{textAlign: 'center'}}>Internet Shop ©2023</Footer>
       </LayoutAntd>

@@ -60,35 +60,63 @@ const Product = () => {
           <Carousel autoplay>
             <div>
               <h3 style={{
-                height: '160px',
+                height: '300px',
                 color: '#fff',
-                lineHeight: '160px',
+                lineHeight: '300px',
                 textAlign: 'center',
-                background: '#364d79'}}>1</h3>
+                background: '#364d79'}}>
+                <Image
+                  src={process.env.PUBLIC_URL + '/slider1.png'}
+                  width={1010}
+                  height={300}
+                  preview={false}
+                />
+              </h3>
+            </div>
+
+            <div>
+              <h3 style={{
+                height: '300px',
+                color: '#fff',
+                lineHeight: '300px',
+                textAlign: 'center',
+                background: '#364d79'}}>
+                <Image
+                  src={process.env.PUBLIC_URL + '/slider2.jpg'}
+                  width={1010}
+                  height={300}
+                  preview={false}
+                />
+              </h3>
             </div>
             <div>
               <h3 style={{
-                height: '160px',
+                height: '300px',
                 color: '#fff',
-                lineHeight: '160px',
+                lineHeight: '300px',
                 textAlign: 'center',
-                background: '#364d79'}}>2</h3>
+                background: '#364d79'}}>
+                <Image
+                  src={process.env.PUBLIC_URL + '/slider3.jpg'}
+                  width={1010}
+                  height={300}
+                  preview={false}
+                />
+              </h3>
             </div>
             <div>
               <h3 style={{
-                height: '160px',
+                height: '300px',
                 color: '#fff',
-                lineHeight: '160px',
+                lineHeight: '300px',
                 textAlign: 'center',
-                background: '#364d79'}}>3</h3>
-            </div>
-            <div>
-              <h3 style={{
-                height: '160px',
-                color: '#fff',
-                lineHeight: '160px',
-                textAlign: 'center',
-                background: '#364d79'}}>4</h3>
+                background: '#364d79'}}>
+                <Image
+                  src={process.env.PUBLIC_URL + '/slider4.png'}
+                  width={1010}
+                  height={300}
+                  preview={false}
+                /></h3>
             </div>
           </Carousel>
         </Col>
@@ -135,6 +163,7 @@ const Product = () => {
                     src={`data:image/jpeg;base64,${product.image}`}
                     width={200}
                     height={200}
+                    preview={false}
                   />
                 </div>
               }

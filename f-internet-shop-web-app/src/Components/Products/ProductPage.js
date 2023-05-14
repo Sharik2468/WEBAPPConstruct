@@ -1,12 +1,10 @@
 /* eslint-disable max-len */
-// ProductPage.js
 import React from 'react';
-import {Descriptions, Typography, Image, Button, notification, Slider, InputNumber, Row, Col} from 'antd';
+import {Image, Button, notification, Slider, InputNumber, Row, Col} from 'antd';
 import {useParams, useNavigate} from 'react-router-dom';
 import {useState, useEffect, useContext} from 'react';
 import UserContext from '../Authorization/UserContext';
-
-const {Title} = Typography;
+import {ProCard} from '@ant-design/pro-components';
 
 const IntegerStep = ({onChange}) => {
   const [inputValue, setInputValue] = useState(1);
@@ -46,11 +44,42 @@ const ProductPage = () => {
   const [product, setProduct] = useState(null);
   const [orderItems, setOrderItems] = useState([]);
   const [quantity, setQuantity] = useState(1);
+  const [Category, setCategory] = useState({});
   const navigate = useNavigate(); // используйте useNavigate вместо useHistory
 
   const addOrderItem = (newOrderItem) => {
     setOrderItems([...orderItems, newOrderItem]);
   };
+
+  useEffect(() => {
+    if (user === null) {
+      return;
+    }
+
+    const getCategory = async () => {
+      const requestOptions = {
+        method: 'GET',
+      };
+
+      try {
+        const response = await fetch(`/api/Cathegory`, requestOptions);
+        const usersData = await response.json();
+
+        // Создаем словарь, который сопоставляет normalCode с пользователем
+        const usersDict = {};
+        for (const user of usersData) {
+          usersDict[user.categoryId] = user;
+        }
+
+        console.log('Users:', usersDict);
+        setCategory(usersDict);
+      } catch (error) {
+        console.log('Error:', error);
+      }
+    };
+
+    getCategory();
+  }, [setCategory, user]);
 
   useEffect(() => {
     const getProduct = async () => {
@@ -167,48 +196,49 @@ const ProductPage = () => {
 
 
   return (
-    product ? (
-      <>
-        <Title level={3}>{product.nameProduct}</Title>
-        {/* <img
-          src={product.imageUrl}
-          alt={product.nameProduct}
-          style={{width: '100%', maxHeight: '300px', objectFit: 'contain'}}
-        /> */}
-        <Image src={`data:image/jpeg;base64,${product.image}`} width={200} />
-        <Descriptions layout="vertical" column={1}>
-          <Descriptions.Item label="Описание">
-            {product.description}
-          </Descriptions.Item>
-          <Descriptions.Item label="Цена">
-            {product.marketPriceProduct} ₽
-          </Descriptions.Item>
-          <Descriptions.Item label="Количество">
-            {product.numberInStock}
-          </Descriptions.Item>
-        </Descriptions>
-
-        {user.userRole == 'user' ? (
-            <Button type="primary" onClick={addToCart}>Добавить в корзину</Button>
-          ) : (<></>
-          )}
-
-        {user.userID!=-1 && user.userRole=='admin' ? (
+    <ProCard gutter={[16, 16]} >
+      <ProCard colSpan="100%" title={product ? product.nameProduct : 'Loading...'} headerBordered bordered>
+        {product ? (
           <>
-            <IntegerStep onChange={setQuantity} /> {/* Добавьте компонент IntegerStep */}
-            <Button type="primary" onClick={() => updateQuantity(quantity)}>Обновить количество</Button>
-            <Button type="danger" onClick={deleteProduct} style={{marginLeft: '16px'}}>
-      Удалить товар
-            </Button>
+            <ProCard gutter={[16, 16]}>
+              <Image
+                src={`data:image/jpeg;base64,${product.image}`}
+              />
+              <ProCard bordered title="Цена">{product.marketPriceProduct} ₽</ProCard>
+            </ProCard>
+
+            <ProCard bordered title="Описание">{product.description}</ProCard>
+
+            <ProCard
+              gutter={[{xs: 8, sm: 8, md: 16, lg: 24, xl: 32}, 16]}
+              style={{marginBlockStart: 16}}
+            >
+              <ProCard bordered title="Количество в наличии">{product.numberInStock}</ProCard>
+              <ProCard bordered title="Гарантия">{product.bestBeforeDateProduct}</ProCard>
+              <ProCard bordered title="Категория">{Category[product.categoryId]?.categoryName || 'Загрузка...'}</ProCard>
+            </ProCard>
+            {user.userRole == 'user' ? (
+                <Button type="primary" onClick={addToCart}>Добавить в корзину</Button>
+              ) : (<></>
+              )}
+
+            {user.userID!=-1 && user.userRole=='admin' ? (
+              <>
+                <IntegerStep onChange={setQuantity} /> {/* Добавьте компонент IntegerStep */}
+                <Button type="primary" onClick={() => updateQuantity(quantity)}>Обновить количество</Button>
+                <Button type="danger" onClick={deleteProduct} style={{marginLeft: '16px'}}>
+                  Удалить товар
+                </Button>
+              </>
+            ) : (
+              <p></p>
+            )}
           </>
         ) : (
-          <p></p>
+          <div>Loading...</div>
         )}
-      </>
-    ) : (
-      <div>Loading...</div>
-    )
+      </ProCard>
+    </ProCard>
   );
 };
-
 export default ProductPage;

@@ -1,14 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {useNavigate} from 'react-router-dom';
-import {Modal} from 'antd';
+import {Button, Result} from 'antd';
+
 const LogOff = ({setUser}) => {
-  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const showModal = () => {
-    setOpen(true);
-  };
   useEffect(() => {
-    showModal();
+    // showModal();
   }, []);
   const logOff = async (event) => {
     event.preventDefault();
@@ -20,20 +17,28 @@ const LogOff = ({setUser}) => {
           response.status === 200 &&
 setUser({isAuthenticated: false, userName: '', userID: -1});
 response.status === 401 ? navigate('/login') : navigate('/');
-setOpen(false);
         },
     );
   };
   const handleCancel = () => {
     console.log('Clicked cancel button');
-    setOpen(false);
     navigate('/');
   };
   return (
     <>
-      <Modal title="Title" open={open} onOk={logOff} onCancel={handleCancel}>
-        <p>Выполнить выход?</p>
-      </Modal>
+      <Result
+        title="Вы действительно хотите выйти?"
+        extra={
+          <>
+            <Button type="primary" key="Exit" onClick={logOff}>
+          Выход
+            </Button>
+            <Button key="Cancel" onClick={handleCancel}>
+          Отмена
+            </Button>
+          </>
+        }
+      />
     </>
   );
 };

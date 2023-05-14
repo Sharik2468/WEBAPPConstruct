@@ -20,6 +20,8 @@ import UserContext from './Components/Authorization/UserContext';
 import ManagmentOrder from './Components/Admin/AdminOrderManagment';
 import UserManagmentOrder from './Components/User/GetAllPreparedOrderUser';
 import UserHistoryOrder from './Components/User/UserHistory';
+import AdminHistoryOrder from './Components/Admin/AdminOrderHistory';
+import ManagmentUser from './Components/Admin/AdminUserManagment';
 
 const App = () => {
   const [OrderItems, setOrderItems] = useState([]);
@@ -105,6 +107,14 @@ const App = () => {
             <Route
               path="/userorderhistory"
               element={<UserHistoryOrder />}
+            />
+            <Route
+              path="/adminorderhistory"
+              element={<AdminHistoryOrder />}
+            />
+            <Route
+              path="/usermanagment"
+              element={<ManagmentUser />}
             />
             <Route
               path="/register"

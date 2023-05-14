@@ -1,8 +1,10 @@
-﻿using InternetShopWebApp.Models;
+﻿using InternetShopWebApp.DTO;
+using InternetShopWebApp.Models;
 using InternetShopWebApp.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Data.Entity;
 using System.Security.Claims;
 using WebAPI.Models;
 
@@ -14,17 +16,20 @@ namespace ASPNetCoreApp.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        private readonly ILogger<AccountController> _logger;
+
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _logger = logger;
         }
 
         [HttpGet]
         [Route("api/account/getusers")]
-        public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
         {
-            return ListUsers();
+            return ListUsersDTO().Result;
         }
 
         [HttpPost]
@@ -45,6 +50,7 @@ namespace ASPNetCoreApp.Controllers
                     await _userManager.AddToRoleAsync(user, "user");
                     // Установка куки
                     await _signInManager.SignInAsync(user, false);
+                    _logger.LogInformation("Register: "+ user.UserName);
                     return Ok(new { message = "Сессия активна", userName = user.UserName, userRole="user", userCode = user?.Id, userID = user.NormalCode, isAuthenticated = true, });
                 }
                 else
@@ -86,6 +92,7 @@ namespace ASPNetCoreApp.Controllers
                     var user = await _userManager.FindByEmailAsync(model.Email);
                     IList<string>? roles = await _userManager.GetRolesAsync(user);
                     string? userRole = roles.FirstOrDefault();
+                    _logger.LogInformation("Login: " + user.UserName);
                     return Ok(new { message = "Сессия активна", userName = user.UserName, userRole, userCode = user?.Id, userID = user.NormalCode, isAuthenticated = true, });
                 }
                 else
@@ -121,6 +128,7 @@ namespace ASPNetCoreApp.Controllers
             }
             // Удаление куки
             await _signInManager.SignOutAsync();
+            _logger.LogInformation("LogOff: " + usr.UserName);
             return Ok(new { message = "Выполнен выход", userName = usr.UserName });
         }
 
@@ -139,10 +147,84 @@ namespace ASPNetCoreApp.Controllers
 
         }
 
+        [Route("api/account/getuserswithroles")]
+        [HttpGet]
+        public async Task<IActionResult> GetUsersWithRoles()
+        {
+            var users = _userManager.Users.ToList();
+            var userRoles = new List<UserDto>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                userRoles.Add(new UserDto
+                {
+                    Id=user.NormalCode,
+                    UserName = user.UserName,
+                    Roles = roles
+                });
+            }
+
+            return Ok(userRoles);
+        }
+
+        [Route("api/account/updateUserRole/{userId}/{newRole}")]
+        [HttpPut]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> UpdateUserRole(int userId, string newRole)
+        {
+            var allUsers = ListUsers();
+            // Находим пользователя по ID
+            var user = allUsers.Where(a => a.NormalCode == userId).FirstOrDefault();
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            // Получаем текущие роли пользователя
+            var currentRoles = await _userManager.GetRolesAsync(user);
+
+            // Удаляем пользователя из всех текущих ролей
+            var removeRoleResult = await _userManager.RemoveFromRolesAsync(user, currentRoles);
+            if (!removeRoleResult.Succeeded)
+            {
+                return BadRequest("Failed to remove user from current roles");
+            }
+
+            // Добавляем пользователя в новую роль
+            var addRoleResult = await _userManager.AddToRoleAsync(user, newRole);
+            if (!addRoleResult.Succeeded)
+            {
+                return BadRequest("Failed to add user to new role");
+            }
+
+            return Ok("Role updated successfully");
+        }
+
         public List<User> ListUsers()
         {
             var users = _userManager.Users;
             return users.ToList();
+        }
+
+        public async Task<List<UserDto>> ListUsersDTO()
+        {
+            var users = _userManager.Users.ToList();
+            var userRoles = new List<UserDto>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                userRoles.Add(new UserDto
+                {
+                    Id = user.NormalCode,
+                    UserName = user.UserName,
+                    Roles = roles,
+                });
+            }
+
+            return userRoles;
         }
 
         [HttpGet]

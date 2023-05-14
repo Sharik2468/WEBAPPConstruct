@@ -87,7 +87,7 @@ typeof data.userName !== 'undefined'
       valuePropName="checked"
       wrapperCol={{offset: 8, span: 16}}
     >
-      <Checkbox>Remember me</Checkbox>
+      <Checkbox>Запомнить меня</Checkbox>
       {renderErrorMessage()}
     </Form.Item>
 

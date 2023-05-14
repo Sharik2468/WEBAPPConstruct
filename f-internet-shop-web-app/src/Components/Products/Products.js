@@ -126,7 +126,7 @@ const Product = () => {
         const response = await fetch('/api/Product/', requestOptions);
         const data = await response.json();
         console.log('Data:', data);
-
+        data.reverse();
         setProducts(data);
       } catch (error) {
         console.log('Error:', error);
@@ -254,10 +254,11 @@ const Product = () => {
           offset: 0,
         }}
       >
+
         <Card
           hoverable
           onClick={() => handleCardClick(product.productCode)}
-          style={{width: '100%'}}
+          style={{width: '200px', height: '300px'}} // Задайте размеры здесь
           cover={
             <div
               style={{
@@ -272,6 +273,7 @@ const Product = () => {
                 src={`data:image/jpeg;base64,${product.image}`}
                 width={200}
                 height={200}
+                preview={false}
               />
             </div>
           }
@@ -279,18 +281,19 @@ const Product = () => {
           <Meta
             title={product.nameProduct}
             description={
-                product.description.length > 20 ?
-                  product.description.substring(0, 20) + '...' :
-                  product.description
+        product.description.length > 20 ?
+          product.description.substring(0, 20) + '...' :
+          product.description
             }
           />
         </Card>
+
       </Col>
     ))
         )}
-        <p></p>
       </Row>
-      <Row gutter={[16, 16]} justify="center">
+      <p></p>
+      <Row gutter={[32, 16]} justify="center">
         <Pagination
           current={currentPage}
           onChange={onChange}

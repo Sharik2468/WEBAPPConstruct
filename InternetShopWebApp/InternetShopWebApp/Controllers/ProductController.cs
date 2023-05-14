@@ -14,10 +14,12 @@ namespace InternetShopWebApp.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly ProductService _productService ;
-        public ProductController(ProductService newProductService)
+        private readonly ProductService _productService;
+        private readonly ILogger<ProductController> _logger;
+        public ProductController(ProductService newProductService, ILogger<ProductController> logger)
         {
             _productService = newProductService;
+            _logger = logger;
         }
 
         // GET: api/Products
@@ -102,6 +104,7 @@ namespace InternetShopWebApp.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             if (!_productService.NewProductService(Product)) return BadRequest(ModelState);
+            _logger.LogInformation("New product create: " + Product.ProductCode+ "Name: "+ Product.NameProduct);
             return CreatedAtAction("GetProduct", new { id = Product.ProductCode }, Product);
         }
 
@@ -154,6 +157,7 @@ namespace InternetShopWebApp.Controllers
                     throw;
                 }
             }
+            _logger.LogInformation("New amount product: " + id+ " amount: "+amount);
             return NoContent();
         }
 
